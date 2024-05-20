@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Spinner xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/canvas_options_new"
+    android:layout_width="154dp"
+    android:layout_height="48dp"
+    android:spinnerMode="dropdown"
+    android:dropDownWidth="134dp"
+    android:popupBackground="#CCFFFFFF"
+    android:dropDownSelector="#CC808080"
+    android:dropDownVerticalOffset="48dp"
+    android:background="@drawable/custom_spn_background"/>

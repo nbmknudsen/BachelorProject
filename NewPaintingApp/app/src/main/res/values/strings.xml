@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">NewPaintingApp</string>
+    <string name="clear_button">Clear the drawing</string>
+    <string name="canvas">Canvas</string>
+    <string name="wood">Wood</string>
+    <string name="change_color">Change color</string>
+    <string name="save_button">Save the drawing</string>
+    <string name="brush">Brush</string>
+    <string-array name="canvasNames">
+        <item>Wood</item>
+        <item>Granite</item>
+        <item>Textile</item>
+        <item>Glass</item>
+    </string-array>
+
+    <string-array name="canvasNamesLowercase">
+        <item>wood</item>
+        <item>canvas</item>
+        <item>silk</item>
+        <item>glass</item>
+    </string-array>
+
+    <string-array name="brushNames">
+        <item>thin</item>
+        <item>flat</item>
+        <item>round</item>
+    </string-array>
+
+    <string-array name="colorValues">
+        <item>#000000</item>
+        <item>#FF0000</item>
+        <item>#FFFF00</item>
+        <item>#0000FF</item>
+    </string-array>
+</resources>

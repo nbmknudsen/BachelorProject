@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Spinner xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/color_options_spinner"
+    android:layout_width="92dp"
+    android:layout_height="48dp"
+    android:spinnerMode="dropdown"
+    android:popupBackground="#CCFFFFFF"
+    android:dropDownSelector="#CC808080"
+    android:dropDownVerticalOffset="48dp"
+    android:background="@drawable/custom_spn_background"
+    />
+<!--
+<a href="https://www.freepik.com/free-vector/painter-brush-realistic-transparent-set-with-art-symbols-isolated-vector-illustration_26761130.htm#query=painting%20paint%20brush&position=40&from_view=keyword&track=ais&uuid=13148efc-8839-4856-aee5-30a946a12f7c">Image by macrovector</a> on Freepik-->
