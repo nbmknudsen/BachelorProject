@@ -8,9 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
-import android.media.AudioFormat;
-import android.media.AudioTrack;
-import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Pair;
@@ -76,7 +73,7 @@ public class DrawingView extends View {
     private double velocity = 0.0;
 
     // Haptics controller
-    final ControlHaptics hapticsController = new ControlHaptics();
+    final ControlFeedback hapticsController = new ControlFeedback();
 
 
     /**
@@ -220,10 +217,12 @@ public class DrawingView extends View {
                 //initializeHaptics();
                 hapticsController.initializeMusic(playMusicFast, playMusicMedium,
                         playMusicSlow, this.getContext(), chosenBrush, chosenBackground);
+
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
                 drawPath.lineTo(touchX,touchY);
+                Context context = this.getContext();
                 new Handler().postDelayed(new Runnable() {
                     public void run() {
                         velocity = getVelocity(event, pointerId);

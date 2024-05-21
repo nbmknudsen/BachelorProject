@@ -1,17 +1,16 @@
 package naomi.sara.newpaintingapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
 import android.os.Build;
-import android.os.Bundle;
 
 /**
- * Class with methods used to control haptics
+ * Class with methods used to control auditory and haptic feedback
  */
-public class ControlHaptics extends Activity {
+public class ControlFeedback {
 
+    //  Array of brush names and array of canvas names
     String[] brushNames = new String[] {"thin", "flat", "round"};;
     String[] canvasNames = new String[] {"wood", "canvas", "silk", "glass"};;
 
@@ -21,12 +20,16 @@ public class ControlHaptics extends Activity {
     private int amplitude;
     private int frequency;
 
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        brushNames = getResources().getStringArray(R.array.brushNames);
-        canvasNames = getResources().getStringArray(R.array.canvasNamesLowercase);
-    }*/
+    /**
+     * Method used to initialize an start the MediaPlayers. This also mutes the fast and medium
+     * sounds, while keeping the slow sound unmuted.
+     * @param playMusicFast     PlayMusic instance used to play the fast sounds
+     * @param playMusicMedium   PlayMusic instance used to play the medium sounds
+     * @param playMusicSlow     PlayMusic instance used to play the slow sounds
+     * @param context           Context of the DrawingView class need to retrieve the sound files
+     * @param chosenBrush       The brush chosen in the brush spinner
+     * @param chosenBackground  The canvas chosen in the canvas spinner
+     */
     public void initializeMusic(PlayMusic playMusicFast, PlayMusic playMusicMedium,
                                  PlayMusic playMusicSlow, Context context, int chosenBrush,
                                  int chosenBackground) {
@@ -61,6 +64,14 @@ public class ControlHaptics extends Activity {
         }
     }
 
+    /**
+     * Method used to change the volume of the different MediaPlayers depending on the velocity of
+     * the user's movements.
+     * @param velocity          The velocity of the user's movements on the screen
+     * @param playMusicFast     PlayMusic instance used to play the fast sounds
+     * @param playMusicMedium   PlayMusic instance used to play the medium sounds
+     * @param playMusicSlow     PlayMusic instance used to play the slow sounds
+     */
     public void velocityMusic(double velocity, PlayMusic playMusicFast, PlayMusic playMusicMedium,
                                PlayMusic playMusicSlow) {
         (new Thread(() -> {
