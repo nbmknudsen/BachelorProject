@@ -15,9 +15,9 @@ import androidx.annotation.RequiresApi;
 import java.io.IOException;
 
 /**
- * Class used to play auditory feedback. The class inherits from the Activity class.
+ * Class used to play auditory feedback. The class implements the PLayInterface interface.
  */
-public class PlayMusic implements PlayInterface { //extends Activity
+public class PlayMusic implements PlayInterface { //extends Activity The class inherits from the Activity class.
         private MediaPlayer mediaPlayer;
         private AudioManager manager;
         public boolean isPlaying = false;

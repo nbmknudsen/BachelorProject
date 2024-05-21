@@ -73,7 +73,7 @@ public class DrawingView extends View {
     private double velocity = 0.0;
 
     // Haptics controller
-    final ControlFeedback hapticsController = new ControlFeedback();
+    final ControlFeedback feedbackController = new ControlFeedback();
 
 
     /**
@@ -195,8 +195,10 @@ public class DrawingView extends View {
 
 
     /**
-     *OverridestheonTouchEventfunctionoftheviewclass
-     * @param event MotionEvent-usedtoreportmovementevents
+     * Overrides the onTouchEvent function of the view class. If the screen is touched, it starts
+     * playing the sound for the haptic and tactile feedback, and when the screen is no longer
+     * touched it stops the feedback.
+     * @param event    MotionEvent - used to report movement events
      */
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -215,7 +217,7 @@ public class DrawingView extends View {
                 }
                 drawPath.moveTo(touchX,touchY);
                 //initializeHaptics();
-                hapticsController.initializeMusic(playMusicFast, playMusicMedium,
+                feedbackController.initializeMusic(playMusicFast, playMusicMedium,
                         playMusicSlow, this.getContext(), chosenBrush, chosenBackground);
 
                 invalidate();
@@ -227,7 +229,7 @@ public class DrawingView extends View {
                     public void run() {
                         velocity = getVelocity(event, pointerId);
                         //Log.d("VELOCITY", "Velocity: " + velocity);
-                        hapticsController.velocityMusic(velocity, playMusicFast, playMusicMedium,
+                        feedbackController.velocityMusic(velocity, playMusicFast, playMusicMedium,
                                 playMusicSlow);
                     }
                 }, 10);
@@ -263,6 +265,13 @@ public class DrawingView extends View {
         invalidate();  // this will force a call to onDraw
     }
 
+    /**
+     * Method used to compute the velocity of the user's movements on the screen in m/s.
+     * @param event         In actuality this is the MotionEvent.ACTION_MOVE
+     * @param pointerId     Pointer identifier associated with a particular pointer data index in
+     *                      the event
+     * @return              The velocity in m/s
+     */
     private double getVelocity(MotionEvent event, int pointerId) {
         velocityTracker.addMovement(event);
         // When you want to determine the velocity, call computeCurrentVelocity(). Then
@@ -272,8 +281,6 @@ public class DrawingView extends View {
         // VelocityTrackerCompat where possible.
         float velocityX = velocityTracker.getXVelocity(pointerId);
         float velocityY = velocityTracker.getYVelocity(pointerId);
-                /*Log.d("VELOCITY", "X velocity: " + velocityTracker.getXVelocity(pointerId));
-                Log.d("VELOCITY", "Y velocity: " + velocityTracker.getYVelocity(pointerId));*/
         //Log.d("VELOCITY", "Velocity: " + velocityMeter);
         //1920 X 1200 PIXELS 0,225 X 0,135 M
         return Math.hypot(velocityX, velocityY) * (0.225/1920);

@@ -287,9 +287,6 @@ public class DrawingViewCopy extends View {
     }
 
     private void initializeHaptics() {
-        playMusicFast.resetPlayer();
-        playMusicMedium.resetPlayer();
-        playMusicSlow.resetPlayer();
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
             (new Thread(()->{
                 switch (String.valueOf(chosenBackground) + String.valueOf(chosenBrush)) {
