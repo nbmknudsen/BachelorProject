@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * Class used to play haptic feedback. The class inherits from the Activity class.
  */
-public class PlayHaptics extends Activity implements PlayInterface {
+public class PlayHaptics implements PlayInterface { // extends Activity
     private MediaPlayer mediaPlayer;
     private AudioManager manager;
     public boolean isPlaying = false;
@@ -91,17 +91,6 @@ public class PlayHaptics extends Activity implements PlayInterface {
         if (isPlaying) {
             isPlaying = false;
             mediaPlayer.pause();
-        }
-    }
-
-    /**
-     * Resets the MediaPlayer instance and sets the variable isPLaying to false, so we know that the
-     * MediaPlayer isn't playing.
-     */
-    public void resetPlayer() {
-        if (mediaPlayer != null) {
-            isPlaying = false;
-            mediaPlayer.reset();
         }
     }
 

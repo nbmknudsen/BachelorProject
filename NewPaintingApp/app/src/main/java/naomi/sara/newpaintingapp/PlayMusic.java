@@ -17,7 +17,7 @@ import java.io.IOException;
 /**
  * Class used to play auditory feedback. The class inherits from the Activity class.
  */
-public class PlayMusic extends Activity implements PlayInterface {
+public class PlayMusic implements PlayInterface { //extends Activity
         private MediaPlayer mediaPlayer;
         private AudioManager manager;
         public boolean isPlaying = false;
@@ -95,17 +95,6 @@ public class PlayMusic extends Activity implements PlayInterface {
         if (isPlaying) {
             isPlaying = false;
             mediaPlayer.pause();
-        }
-    }
-
-    /**
-     * Resets the MediaPlayer instance and sets the variable isPLaying to false, so we know that the
-     * MediaPlayer isn't playing.
-     */
-    public void resetPlayer() {
-        if (mediaPlayer != null) {
-            isPlaying = false;
-            mediaPlayer.reset();
         }
     }
 

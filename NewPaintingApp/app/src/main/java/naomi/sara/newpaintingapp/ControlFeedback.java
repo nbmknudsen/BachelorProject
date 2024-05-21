@@ -33,9 +33,6 @@ public class ControlFeedback {
     public void initializeMusic(PlayMusic playMusicFast, PlayMusic playMusicMedium,
                                  PlayMusic playMusicSlow, Context context, int chosenBrush,
                                  int chosenBackground) {
-        playMusicFast.resetPlayer();
-        playMusicMedium.resetPlayer();
-        playMusicSlow.resetPlayer();
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
             (new Thread(()->{
                 int fastSound = context.getResources().getIdentifier(

@@ -11,7 +11,6 @@ public interface PlayInterface {
     void startPlaying(Context context);
     void setVolume(float leftVolume, float rightVolume);
     void pausePlaying();
-    void resetPlayer();
     void stopPlaying();
     AudioDeviceInfo findAudioDevice(int deviceType, Context context);
 }
