@@ -66,7 +66,7 @@ public class DrawingView extends View {
     final PlayMusic playMusicSlow = new PlayMusic();
     final PlayHaptics playHapticsFast = new PlayHaptics();
     final PlayHaptics playHapticsMedium = new PlayHaptics();
-    final PlayHaptics playHapticsSLow = new PlayHaptics();
+    final PlayHaptics playHapticsSlow = new PlayHaptics();
 
     // Velocity tracker
     private VelocityTracker velocityTracker = null;
@@ -219,6 +219,9 @@ public class DrawingView extends View {
                 //initializeHaptics();
                 feedbackController.initializeMusic(playMusicFast, playMusicMedium,
                         playMusicSlow, this.getContext(), chosenBrush, chosenBackground);
+                feedbackController.initializeHaptics(playHapticsFast, playHapticsMedium,
+                        playHapticsSlow, this.getContext(), chosenBrush, chosenBackground);
+
 
                 invalidate();
                 break;
@@ -231,6 +234,8 @@ public class DrawingView extends View {
                         //Log.d("VELOCITY", "Velocity: " + velocity);
                         feedbackController.velocityMusic(velocity, playMusicFast, playMusicMedium,
                                 playMusicSlow);
+                        feedbackController.velocityHaptics(velocity, playHapticsFast, playHapticsMedium,
+                                playHapticsSlow);
                     }
                 }, 10);
 

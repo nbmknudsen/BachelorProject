@@ -11,7 +11,7 @@ import android.os.Build;
 public class ControlFeedback {
 
     //  Array of brush names and array of canvas names
-    String[] brushNames = new String[] {"thin", "flat", "round"};;
+    String[] brushNames = new String[] {"thin", "square", "round"};;
     String[] canvasNames = new String[] {"wood", "canvas", "silk", "glass"};;
 
     // Variables needed for the PlaySound class - parametric mode
@@ -35,15 +35,15 @@ public class ControlFeedback {
                                  int chosenBackground) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
             (new Thread(()->{
-                int fastSound = context.getResources().getIdentifier(
-                        "g4_"+"wood"+"_type_silver_oak_sound", "raw",
-                        context.getPackageName());
-                int mediumSound = context.getResources().getIdentifier(
-                        brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] +
-                                "_m_haptics", "raw", context.getPackageName());
-                int slowSound = context.getResources().getIdentifier(
-                        brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] +
-                                "_s_4_haptics", "raw", context.getPackageName());
+                int fastSound = context.getResources().getIdentifier("sound" +
+                                brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_f",
+                        "raw", context.getPackageName());
+                int mediumSound = context.getResources().getIdentifier("sound" +
+                        brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_m",
+                        "raw", context.getPackageName());
+                int slowSound = context.getResources().getIdentifier("sound" +
+                        brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s_",
+                        "raw", context.getPackageName());
 
                 playMusicFast.init(context, fastSound);
                 playMusicFast.setVolume(0, 0);
@@ -87,6 +87,79 @@ public class ControlFeedback {
                     playMusicFast.setVolume(0,0);
                     playMusicMedium.setVolume(0,0);
                     playMusicSlow.setVolume(1,1);
+                }
+            }
+        })).start();
+    }
+
+    /**
+     * Method used to initialize an start the MediaPlayers. This also mutes the fast and medium
+     * sounds, while keeping the slow sound unmuted.
+     * @param playHapticsFast     PlayHaptics instance used to play the fast haptics
+     * @param playHapticsMedium   PlayHaptics instance used to play the medium haptics
+     * @param playHapticsSlow     PlayHaptics instance used to play the slow haptics
+     * @param context             Context of the DrawingView class need to retrieve the haptics
+     *                            sound files
+     * @param chosenBrush         The brush chosen in the brush spinner
+     * @param chosenBackground    The canvas chosen in the canvas spinner
+     */
+    public void initializeHaptics(PlayHaptics playHapticsFast, PlayHaptics playHapticsMedium,
+                                PlayHaptics playHapticsSlow, Context context, int chosenBrush,
+                                int chosenBackground) {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+            (new Thread(()->{
+                int fastSound = context.getResources().getIdentifier("haptics" +
+                                brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_f",
+                        "raw", context.getPackageName());
+                int mediumSound = context.getResources().getIdentifier("haptics" +
+                                brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_m",
+                        "raw", context.getPackageName());
+                int slowSound = context.getResources().getIdentifier("haptics" +
+                                brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s_",
+                        "raw", context.getPackageName());
+
+                playHapticsFast.init(context, fastSound);
+                playHapticsFast.setVolume(0, 0);
+                playHapticsFast.startPlaying(context);
+
+                playHapticsMedium.init(context, fastSound);
+                playHapticsMedium.setVolume(0, 0);
+                playHapticsMedium.startPlaying(context);
+
+                playHapticsSlow.init(context, slowSound);
+                playHapticsSlow.startPlaying(context);
+                playHapticsSlow.setVolume(1,1);
+
+            })).start();
+        }
+    }
+
+    /**
+     * Method used to change the volume of the different MediaPlayers depending on the velocity of
+     * the user's movements.
+     * @param velocity          The velocity of the user's movements on the screen
+     * @param playHapticsFast     PlayHaptics instance used to play the fast haptics
+     * @param playHapticsMedium   PlayHaptics instance used to play the medium haptics
+     * @param playHapticsSlow     PlayHaptics instance used to play the slow haptics
+     */
+    public void velocityHaptics(double velocity, PlayHaptics playHapticsFast, PlayHaptics playHapticsMedium,
+                              PlayHaptics playHapticsSlow) {
+        (new Thread(() -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                //Log.d("VELOCITY", "Velocity: " + velocity);
+
+                if (velocity > 0.045) {
+                    playHapticsFast.setVolume(1,1);
+                    playHapticsMedium.setVolume(0,0);
+                    playHapticsSlow.setVolume(0,0);
+                } else if (velocity > 0.025) {
+                    playHapticsFast.setVolume(0,0);
+                    playHapticsMedium.setVolume(1,1);
+                    playHapticsSlow.setVolume(0,0);
+                } else {
+                    playHapticsFast.setVolume(0,0);
+                    playHapticsMedium.setVolume(0,0);
+                    playHapticsSlow.setVolume(1,1);
                 }
             }
         })).start();
