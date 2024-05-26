@@ -15,57 +15,64 @@ import androidx.annotation.RequiresApi;
 import java.io.IOException;
 
 /**
- * Class used to play auditory feedback. The class implements the PLayInterface interface.
+ * Class used to play auditory feedback. The class implements the PlayInterface interface.
  */
 public class PlayMusic implements PlayInterface { //extends Activity The class inherits from the Activity class.
-        private MediaPlayer mediaPlayer;
-        private AudioManager manager;
-        public boolean isPlaying = false;
+    private MediaPlayer mediaPlayer;
+    private AudioManager manager;
+    private boolean isPlaying = false;
+    private float volume = 0;
 
     /**
      * Creates a MediaPlayer instance and initialize it with different parameters
+     *
      * @param context Context - used to create a Uri
      */
-    @RequiresApi(api=Build.VERSION_CODES.S)
-    public void init(Context context, int fileName){
-        Uri uri=Uri.parse("android.resource://"+context.getPackageName()+"/"+fileName);
-        mediaPlayer=new MediaPlayer();
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    public void init(Context context, int fileName) {
+        Uri uri = Uri.parse("android.resource://" + context.getPackageName() + "/" + fileName);
+        mediaPlayer = new MediaPlayer();
         mediaPlayer.reset();
         mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build());
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build());
 
         try {
-            mediaPlayer.setDataSource(context,uri);
+            mediaPlayer.setDataSource(context, uri);
             mediaPlayer.prepareAsync();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        manager=(AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+        manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
     }
 
     /**
      * Plays the MediaPlayer instance and sets the variable isPLaying to true, so we know if the
      * MediaPlayer is playing. Sets the bluetooth headset as the preferred device to send sound.
+     *
      * @param context Context - used to check if device is connected to bluetooth
      */
     public void startPlaying(Context context) {
         AudioDeviceInfo bt_headset = findAudioDevice(AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, context);
-        if (bt_headset == null) {
-            manager.setSpeakerphoneOn(true);
-        } else {
-            Log.d("BLUETOOTH CONNECTION", String.valueOf(bt_headset.getType()));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                mediaPlayer.setPreferredDevice(bt_headset);
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            if (bt_headset == null) {
+                //AudioDeviceInfo speaker = findAudioDevice(AudioDeviceInfo.TYPE_BUILTIN_SPEAKER, context);
+                manager.setSpeakerphoneOn(true);
+                //mediaPlayer.setPreferredDevice(speaker);
+            } else {
+                Log.d("BLUETOOTH CONNECTION", String.valueOf(bt_headset.getType()));
+
+                    mediaPlayer.setPreferredDevice(bt_headset);
+                }
         }
         mediaPlayer.setOnPreparedListener(mp -> {
-            if(!mp.isPlaying()){
+            if (!mp.isPlaying()) {
                 mp.start();
                 mp.setLooping(true);
-                isPlaying=true;
+                isPlaying = true;
+                volume = 1.0f;
             }
         });
     }
@@ -73,19 +80,21 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
     /**
      * Sets the left and right volume of the MediaPLayer. We use this to mute the players we don't
      * want to hear and unmute when we want to hear the players again. 0 is mute and 1 is unmute.
-     * @param leftVolume   Value of the wanted left volume. This should be the same as rightVolume.
-     * @param rightVolume  Value of the wanted right volume This should be the same as leftVolume.
+     *
+     * @param leftVolume  Value of the wanted left volume. This should be the same as rightVolume.
+     * @param rightVolume Value of the wanted right volume This should be the same as leftVolume.
      */
     public void setVolume(float leftVolume, float rightVolume) {
         if (mediaPlayer != null) {
-            /*(new Thread(() -> {*/
-                if (leftVolume == 1) {
-                    mediaPlayer.setVolume(leftVolume, rightVolume);
-                } else {
-                    mediaPlayer.setVolume(0, 0);
-                }
+            mediaPlayer.setVolume(leftVolume, rightVolume);
+            if (leftVolume == 1) {
+                volume = 1;
+            } else {
+                volume = 0;
+            }
         }
     }
+
 
     /**
      * Pauses the MediaPlayer instance and sets the variable isPLaying to false, so we know that the
@@ -112,6 +121,18 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
         }
     }
 
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
     /** Function used to find out if it is possible to connect to specified device. Skeleton code
      * is originally taken from Daniel Beltrami's answer
      * <a href="https://stackoverflow.com/questions/70489941/how-do-i-get-android-media-setpreferreddevice-to-work">here</a>.
@@ -123,6 +144,7 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
         if (context != null) {
             AudioDeviceInfo[] adis = manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
             for (AudioDeviceInfo adi : adis) {
+                Log.d("CONNECTION TYPES", String.valueOf(adi.getType()));
                 if (adi.getType() == deviceType) {
                     Log.d("CONNECTED TO", String.valueOf(adi.getType()));
                     return adi;

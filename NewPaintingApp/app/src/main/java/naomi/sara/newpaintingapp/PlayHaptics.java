@@ -13,12 +13,13 @@ import androidx.annotation.RequiresApi;
 import java.io.IOException;
 
 /**
- * Class used to play haptic feedback. The class implements the PLayInterface interface.
+ * Class used to play haptic feedback. The class implements the PlayInterface interface.
  */
 public class PlayHaptics implements PlayInterface { // extends Activity The class inherits from the Activity class.
     private MediaPlayer mediaPlayer;
     private AudioManager manager;
-    public boolean isPlaying = false;
+    private boolean isPlaying = false;
+    private float volume = 0.0f;
 
     /**
      * Creates a MediaPlayer instance and initialize it with different parameters. It also
@@ -53,17 +54,21 @@ public class PlayHaptics implements PlayInterface { // extends Activity The clas
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             AudioDeviceInfo aux_line = findAudioDevice(AudioDeviceInfo.TYPE_WIRED_HEADPHONES, context);
             mediaPlayer.setPreferredDevice(aux_line);
-        }
-        mediaPlayer.setOnPreparedListener(mp -> {
-            if(! mp.isPlaying()) {
-                //long startTime = System.currentTimeMillis();
-                mp.start();
-                //long endTime = System.currentTimeMillis();
-                //System.out.println("Time taken to read and play the .wav file: " + (endTime - startTime) + " milliseconds");
-                mp.setLooping(true);
-                isPlaying = true;
+            if (aux_line != null) {
+                mediaPlayer.setOnPreparedListener(mp -> {
+                    if (!mp.isPlaying()) {
+                        System.out.println("Went into if statement in starPlaying");
+                        //long startTime = System.currentTimeMillis();
+                        mp.start();
+                        //long endTime = System.currentTimeMillis();
+                        //System.out.println("Time taken to read and play the .wav file: " + (endTime - startTime) + " milliseconds");
+                        mp.setLooping(true);
+                        isPlaying = true;
+                        volume = 1.0f;
+                    }
+                });
             }
-        });
+        }
     }
 
     /**
@@ -74,11 +79,11 @@ public class PlayHaptics implements PlayInterface { // extends Activity The clas
      */
     public void setVolume(float leftVolume, float rightVolume) {
         if (mediaPlayer != null) {
-            /*(new Thread(() -> {*/
-            if (leftVolume == 1) {
-                mediaPlayer.setVolume(leftVolume, rightVolume);
+            mediaPlayer.setVolume(leftVolume, rightVolume);
+            if (leftVolume == 1.0f) {
+                volume = 1.0f;
             } else {
-                mediaPlayer.setVolume(0, 0);
+                volume = 0.0f;
             }
         }
     }
@@ -105,6 +110,18 @@ public class PlayHaptics implements PlayInterface { // extends Activity The clas
             mediaPlayer.stop();
             mediaPlayer.release();
         }
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
     }
 
     /** Function used to find out if it is possible to connect to specified device. Skeleton code

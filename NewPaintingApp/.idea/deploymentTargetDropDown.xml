@@ -2,7 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="ControlFeedbackInstrumentedTest">
+        <State />
+      </entry>
+      <entry key="PlayHapticsInstrumentedTest">
+        <State />
+      </entry>
+      <entry key="PlayMusicInstrumentedTest">
+        <State />
+      </entry>
       <entry key="app">
+        <State />
+      </entry>
+      <entry key="initializeHaptics()">
+        <State />
+      </entry>
+      <entry key="startPlayingPreferredDevice()">
         <State />
       </entry>
     </value>

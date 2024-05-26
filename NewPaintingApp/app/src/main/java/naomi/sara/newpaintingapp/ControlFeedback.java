@@ -35,27 +35,27 @@ public class ControlFeedback {
                                  int chosenBackground) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
             (new Thread(()->{
-                int fastSound = context.getResources().getIdentifier("sound" +
+                int fastSound = context.getResources().getIdentifier("sound_" +
                                 brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_f",
                         "raw", context.getPackageName());
-                int mediumSound = context.getResources().getIdentifier("sound" +
+                int mediumSound = context.getResources().getIdentifier("sound_" +
                         brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_m",
                         "raw", context.getPackageName());
-                int slowSound = context.getResources().getIdentifier("sound" +
-                        brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s_",
+                int slowSound = context.getResources().getIdentifier("sound_" +
+                        brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s",
                         "raw", context.getPackageName());
 
                 playMusicFast.init(context, fastSound);
-                playMusicFast.setVolume(0, 0);
+                playMusicFast.setVolume(0.0f, 0.0f);
                 playMusicFast.startPlaying(context);
 
-                playMusicMedium.init(context, fastSound);
-                playMusicMedium.setVolume(0, 0);
+                playMusicMedium.init(context, mediumSound);
+                playMusicMedium.setVolume(0.0f, 0.0f);
                 playMusicMedium.startPlaying(context);
 
                 playMusicSlow.init(context, slowSound);
+                playMusicSlow.setVolume(1.0f,1.0f);
                 playMusicSlow.startPlaying(context);
-                playMusicSlow.setVolume(1,1);
 
             })).start();
         }
@@ -71,25 +71,25 @@ public class ControlFeedback {
      */
     public void velocityMusic(double velocity, PlayMusic playMusicFast, PlayMusic playMusicMedium,
                                PlayMusic playMusicSlow) {
-        (new Thread(() -> {
+        //(new Thread(() -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 //Log.d("VELOCITY", "Velocity: " + velocity);
 
                 if (velocity > 0.045) {
-                    playMusicFast.setVolume(1,1);
-                    playMusicMedium.setVolume(0,0);
-                    playMusicSlow.setVolume(0,0);
+                    playMusicFast.setVolume(1.0f,1.0f);
+                    playMusicMedium.setVolume(0.0f,0.0f);
+                    playMusicSlow.setVolume(0.0f,0.0f);
                 } else if (velocity > 0.025) {
-                    playMusicFast.setVolume(0,0);
-                    playMusicMedium.setVolume(1,1);
-                    playMusicSlow.setVolume(0,0);
+                    playMusicFast.setVolume(0.0f,0.0f);
+                    playMusicMedium.setVolume(1.0f,1.0f);
+                    playMusicSlow.setVolume(0.0f,0.0f);
                 } else {
-                    playMusicFast.setVolume(0,0);
-                    playMusicMedium.setVolume(0,0);
-                    playMusicSlow.setVolume(1,1);
+                    playMusicFast.setVolume(0.0f,0.0f);
+                    playMusicMedium.setVolume(0.0f,0.0f);
+                    playMusicSlow.setVolume(1.0f,1.0f);
                 }
             }
-        })).start();
+        //})).start();
     }
 
     /**
@@ -107,30 +107,30 @@ public class ControlFeedback {
                                 PlayHaptics playHapticsSlow, Context context, int chosenBrush,
                                 int chosenBackground) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
-            (new Thread(()->{
-                int fastSound = context.getResources().getIdentifier("haptics" +
+            //(new Thread(()-> {
+                int fastSound = context.getResources().getIdentifier("haptics_" +
                                 brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_f",
                         "raw", context.getPackageName());
-                int mediumSound = context.getResources().getIdentifier("haptics" +
+                int mediumSound = context.getResources().getIdentifier("haptics_" +
                                 brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_m",
                         "raw", context.getPackageName());
-                int slowSound = context.getResources().getIdentifier("haptics" +
-                                brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s_",
+                int slowSound = context.getResources().getIdentifier("haptics_" +
+                                brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s",
                         "raw", context.getPackageName());
 
                 playHapticsFast.init(context, fastSound);
-                playHapticsFast.setVolume(0, 0);
+                playHapticsFast.setVolume(0.0f, 0.0f);
                 playHapticsFast.startPlaying(context);
 
-                playHapticsMedium.init(context, fastSound);
-                playHapticsMedium.setVolume(0, 0);
+                playHapticsMedium.init(context, mediumSound);
+                playHapticsMedium.setVolume(0.0f, 0.0f);
                 playHapticsMedium.startPlaying(context);
 
                 playHapticsSlow.init(context, slowSound);
                 playHapticsSlow.startPlaying(context);
-                playHapticsSlow.setVolume(1,1);
+                playHapticsSlow.setVolume(1.0f,1.0f);
 
-            })).start();
+            //})).start();
         }
     }
 
@@ -149,17 +149,17 @@ public class ControlFeedback {
                 //Log.d("VELOCITY", "Velocity: " + velocity);
 
                 if (velocity > 0.045) {
-                    playHapticsFast.setVolume(1,1);
-                    playHapticsMedium.setVolume(0,0);
-                    playHapticsSlow.setVolume(0,0);
+                    playHapticsFast.setVolume(1.0f,1.0f);
+                    playHapticsMedium.setVolume(0.0f,0.0f);
+                    playHapticsSlow.setVolume(0.0f,0.0f);
                 } else if (velocity > 0.025) {
-                    playHapticsFast.setVolume(0,0);
-                    playHapticsMedium.setVolume(1,1);
-                    playHapticsSlow.setVolume(0,0);
+                    playHapticsFast.setVolume(0.0f,0.0f);
+                    playHapticsMedium.setVolume(1.0f,1.0f);
+                    playHapticsSlow.setVolume(0.0f,0.0f);
                 } else {
-                    playHapticsFast.setVolume(0,0);
-                    playHapticsMedium.setVolume(0,0);
-                    playHapticsSlow.setVolume(1,1);
+                    playHapticsFast.setVolume(0.0f,0.0f);
+                    playHapticsMedium.setVolume(0.0f,0.0f);
+                    playHapticsSlow.setVolume(1.0f,1.0f);
                 }
             }
         })).start();

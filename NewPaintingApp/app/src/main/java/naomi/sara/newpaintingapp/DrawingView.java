@@ -30,6 +30,8 @@ public class DrawingView extends View {
     private Path drawPath;
     private Paint drawPaint;
 
+    private Canvas drawCanvas;
+
     private List<Path> paths = new ArrayList<Path>();
     private List<Integer> colors = new ArrayList<Integer>();
 
@@ -58,22 +60,22 @@ public class DrawingView extends View {
     public int chosenBrush = 0;
 
     // Instance of PlaySound class - parametric model not in use
-    final PlaySound playSound = new PlaySound();
+    //final PlaySound playSound = new PlaySound();
 
     // Instance of PlayMusic and PlayHaptics class - datadriven model
-    final PlayMusic playMusicFast = new PlayMusic();
-    final PlayMusic playMusicMedium = new PlayMusic();
-    final PlayMusic playMusicSlow = new PlayMusic();
-    final PlayHaptics playHapticsFast = new PlayHaptics();
-    final PlayHaptics playHapticsMedium = new PlayHaptics();
-    final PlayHaptics playHapticsSlow = new PlayHaptics();
+    private final PlayMusic playMusicFast = new PlayMusic();
+    private final PlayMusic playMusicMedium = new PlayMusic();
+    private final PlayMusic playMusicSlow = new PlayMusic();
+    private final PlayHaptics playHapticsFast = new PlayHaptics();
+    private final PlayHaptics playHapticsMedium = new PlayHaptics();
+    private final PlayHaptics playHapticsSlow = new PlayHaptics();
 
     // Velocity tracker
     private VelocityTracker velocityTracker = null;
     private double velocity = 0.0;
 
     // Haptics controller
-    final ControlFeedback feedbackController = new ControlFeedback();
+    private final ControlFeedback feedbackController = new ControlFeedback();
 
 
     /**
@@ -112,15 +114,15 @@ public class DrawingView extends View {
      * Initializes values for painting, such as the brush color, brush type and thickness
      */
     private void setupDrawing() {
+        drawCanvas = new Canvas();
         drawPath = new Path();
         drawPaint = new Paint();
         drawPaint.setColor(currentColor);
         drawPaint.setAntiAlias(true);
         drawPaint.setStrokeWidth(currentBrush.first);
+        drawPaint.setStrokeCap(currentBrush.second);
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
-        drawPaint.setStrokeCap(currentBrush.second);
-
         //drawPaint.setShadowLayer(40, 0, 0, Color.HSVToColor(new float[]{ 355f, 1f, 0.81f })); //Color.parseColor(
         //drawPaint.setShader(new LinearGradient(0, 0, currentBrush.first, currentBrush.first, Color.WHITE, currentColor, Shader.TileMode.MIRROR));
     }
@@ -135,8 +137,10 @@ public class DrawingView extends View {
      */
     @Override
     protected void onSizeChanged(int w, int h, int old_w, int old_h) {
+        drawCanvas.save();
         super.onSizeChanged(w, h, old_w, old_h);
-        // drawCanvas = new Canvas(); // draw new canvas when change orientation of screen
+        drawCanvas.restore();
+        //drawCanvas = new Canvas(); // draw new canvas when change orientation of screen
     }
 
     /**
@@ -173,6 +177,14 @@ public class DrawingView extends View {
 
     }
 
+    public Paint getPaint() {
+        return drawPaint;
+    }
+
+    public Path getPath() {
+        return drawPath;
+    }
+
     /**
      * Overrides the onDraw function of the view class. It is used to draw the picture background
      * and the strokes. The for-loop skeleton is originally taken from
@@ -185,11 +197,15 @@ public class DrawingView extends View {
         backgrounds[chosenBackground].setBounds(0, 0, getWidth(), getHeight());
         backgrounds[chosenBackground].draw(canvas);
 
-        for (int i = 0; i < paths.size(); i++) {
-            drawPaint.setColor(colors.get(i));
-            drawPaint.setStrokeWidth(brushes.get(i).first);
-            drawPaint.setStrokeCap(brushes.get(i).second);
-            canvas.drawPath(paths.get(i), drawPaint);
+        if (paths.isEmpty()) {
+            canvas.drawPath(drawPath, drawPaint);
+        } else {
+            for (int i = 0; i < paths.size(); i++) {
+                drawPaint.setColor(colors.get(i));
+                drawPaint.setStrokeWidth(brushes.get(i).first);
+                drawPaint.setStrokeCap(brushes.get(i).second);
+                canvas.drawPath(paths.get(i), drawPaint);
+            }
         }
     }
 
@@ -245,7 +261,10 @@ public class DrawingView extends View {
                 playMusicFast.pausePlaying();
                 playMusicMedium.pausePlaying();
                 playMusicSlow.pausePlaying();
-                //playHaptics.stopPlaying();
+
+                playHapticsFast.pausePlaying();
+                playHapticsMedium.pausePlaying();
+                playHapticsSlow.pausePlaying();
                 invalidate();
                 break;
             case MotionEvent.ACTION_CANCEL:
