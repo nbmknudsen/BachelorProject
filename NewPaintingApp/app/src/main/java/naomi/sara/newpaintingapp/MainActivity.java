@@ -8,18 +8,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Main class for app that initializes the canvas. Inherits from the AppCompatActivity class
@@ -62,10 +58,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
 
+        drawingView = findViewById(R.id.drawingView);
         // Dictates what happens when the clear_button is clicked
         Button clear = (Button) findViewById(R.id.clear_button);
         clear.setOnClickListener(v -> {
-            drawingView = findViewById(R.id.drawingView);
+            //drawingView = findViewById(R.id.drawingView);
             drawingView.clearView();
             Log.d("BUTTONS", "User tapped the Clear button");
         });
@@ -126,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Write something on screen with small icon
                 /*Toast.makeText(getApplicationContext(), canvasNames[position], Toast.LENGTH_LONG).show();*/
-                drawingView = findViewById(R.id.drawingView);
+                /*drawingView = findViewById(R.id.drawingView);*/
 
                 switch(canvasNames[position]) {//switch(chosen_canvas) {
                     case "Wood":
@@ -174,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                drawingView = findViewById(R.id.drawingView);
+                //drawingView = findViewById(R.id.drawingView);
                 drawingView.changeColor(Color.parseColor(colorArray[position]));
             }
 
@@ -200,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                drawingView = findViewById(R.id.drawingView);
+                //drawingView = findViewById(R.id.drawingView);
 
                 switch(position) {
                     // round (thin) brush

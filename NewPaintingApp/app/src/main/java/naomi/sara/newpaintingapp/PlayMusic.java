@@ -30,13 +30,13 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
      */
     @RequiresApi(api = Build.VERSION_CODES.S)
     public void init(Context context, int fileName) {
-        Uri uri = Uri.parse("android.resource://" + context.getPackageName() + "/" + fileName);
         mediaPlayer = new MediaPlayer();
         mediaPlayer.reset();
         mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .build());
 
+        Uri uri = Uri.parse("android.resource://" + context.getPackageName() + "/" + fileName);
         try {
             mediaPlayer.setDataSource(context, uri);
             mediaPlayer.prepareAsync();
@@ -69,8 +69,8 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
         }
         mediaPlayer.setOnPreparedListener(mp -> {
             if (!mp.isPlaying()) {
-                mp.start();
                 mp.setLooping(true);
+                mp.start();
                 isPlaying = true;
                 volume = 1.0f;
             }
@@ -85,13 +85,9 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
      * @param rightVolume Value of the wanted right volume This should be the same as leftVolume.
      */
     public void setVolume(float leftVolume, float rightVolume) {
-        if (mediaPlayer != null) {
+        if (mediaPlayer != null && leftVolume == rightVolume && (leftVolume == 0f || leftVolume == 1f)) {
             mediaPlayer.setVolume(leftVolume, rightVolume);
-            if (leftVolume == 1) {
-                volume = 1;
-            } else {
-                volume = 0;
-            }
+            volume = leftVolume;
         }
     }
 

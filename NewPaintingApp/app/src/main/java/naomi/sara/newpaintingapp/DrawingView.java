@@ -108,10 +108,11 @@ public class DrawingView extends View {
      */
     public DrawingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setupDrawing();
     }
 
     /**
-     * Initializes values for painting, such as the brush color, brush type and thickness
+     * Initializes properties for painting, such as the brush color, brush type and thickness
      */
     private void setupDrawing() {
         drawCanvas = new Canvas();
@@ -186,7 +187,7 @@ public class DrawingView extends View {
     }
 
     /**
-     * Overrides the onDraw function of the view class. It is used to draw the picture background
+     * Overrides the onDraw function of the view class. It is used to draw the canvas background
      * and the strokes. The for-loop skeleton is originally taken from
      * <a href="https://stackoverflow.com/questions/43966917/drawing-a-path-with-multiple-colors">
      * here</a> and iterates through the colors, brushes and paths lists to draw the correct path.
@@ -213,14 +214,15 @@ public class DrawingView extends View {
     /**
      * Overrides the onTouchEvent function of the view class. If the screen is touched, it starts
      * playing the sound for the haptic and tactile feedback, and when the screen is no longer
-     * touched it stops the feedback.
+     * touched it stops the feedback. It also adjusts the haptic and tactile feedback being played
+     * based on the velocity.
      * @param event    MotionEvent - used to report movement events
      */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event){
-        float touchX=event.getX();
-        float touchY=event.getY();
+        float touchX = event.getX();
+        float touchY = event.getY();
         int index = event.getActionIndex();
         int pointerId = event.getPointerId(index);
 
@@ -231,19 +233,17 @@ public class DrawingView extends View {
                     // Retrieve a new VelocityTracker object to watch the velocity of a motion.
                     velocityTracker = VelocityTracker.obtain();
                 }
-                drawPath.moveTo(touchX,touchY);
+                drawPath.moveTo(touchX, touchY);
                 //initializeHaptics();
                 feedbackController.initializeMusic(playMusicFast, playMusicMedium,
                         playMusicSlow, this.getContext(), chosenBrush, chosenBackground);
                 feedbackController.initializeHaptics(playHapticsFast, playHapticsMedium,
                         playHapticsSlow, this.getContext(), chosenBrush, chosenBackground);
 
-
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
                 drawPath.lineTo(touchX,touchY);
-                Context context = this.getContext();
                 new Handler().postDelayed(new Runnable() {
                     public void run() {
                         velocity = getVelocity(event, pointerId);
@@ -280,7 +280,7 @@ public class DrawingView extends View {
     }
 
     /**
-     * Clears the canvas of any drawing
+     * Clears the canvas of any paint/drawing.
      */
     public void clearView() {
         for (int i = 0; i < paths.size(); i++) {

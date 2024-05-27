@@ -53,16 +53,16 @@ public class PlayHaptics implements PlayInterface { // extends Activity The clas
     public void startPlaying(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             AudioDeviceInfo aux_line = findAudioDevice(AudioDeviceInfo.TYPE_WIRED_HEADPHONES, context);
-            mediaPlayer.setPreferredDevice(aux_line);
             if (aux_line != null) {
+                mediaPlayer.setPreferredDevice(aux_line);
                 mediaPlayer.setOnPreparedListener(mp -> {
                     if (!mp.isPlaying()) {
                         System.out.println("Went into if statement in starPlaying");
+                        mp.setLooping(true);
                         //long startTime = System.currentTimeMillis();
                         mp.start();
                         //long endTime = System.currentTimeMillis();
                         //System.out.println("Time taken to read and play the .wav file: " + (endTime - startTime) + " milliseconds");
-                        mp.setLooping(true);
                         isPlaying = true;
                         volume = 1.0f;
                     }
@@ -80,11 +80,7 @@ public class PlayHaptics implements PlayInterface { // extends Activity The clas
     public void setVolume(float leftVolume, float rightVolume) {
         if (mediaPlayer != null) {
             mediaPlayer.setVolume(leftVolume, rightVolume);
-            if (leftVolume == 1.0f) {
-                volume = 1.0f;
-            } else {
-                volume = 0.0f;
-            }
+            volume = leftVolume;
         }
     }
 

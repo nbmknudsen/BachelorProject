@@ -107,7 +107,7 @@ public class ControlFeedback {
                                 PlayHaptics playHapticsSlow, Context context, int chosenBrush,
                                 int chosenBackground) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
-            //(new Thread(()-> {
+            (new Thread(()-> {
                 int fastSound = context.getResources().getIdentifier("haptics_" +
                                 brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_f",
                         "raw", context.getPackageName());
@@ -130,7 +130,7 @@ public class ControlFeedback {
                 playHapticsSlow.startPlaying(context);
                 playHapticsSlow.setVolume(1.0f,1.0f);
 
-            //})).start();
+            })).start();
         }
     }
 

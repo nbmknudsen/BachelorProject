@@ -52,16 +52,16 @@ public class ControlFeedbackInstrumentedTest {
 
     /*@Test
     public void initializeMusic() {
-        *//*controlFeedback.initializeMusic(playMusicFast, playMusicMedium, playMusicSlow, context,
-                chosenBrush, chosenBackground);*//*
+        controlFeedback.initializeMusic(playMusicFast, playMusicMedium, playMusicSlow, context,
+                chosenBrush, chosenBackground);
         //SystemClock.sleep(1000);
-        SystemClock.sleep(10000);
+        SystemClock.sleep(1000);
         boolean isPlaying = playMusicFast.isPlaying() && playMusicMedium.isPlaying() &&
                 playMusicSlow.isPlaying();
         System.out.printf("Fast: %b, medium: %b, slow: %b%n", playMusicFast.isPlaying(), playMusicMedium.isPlaying(), playMusicSlow.isPlaying());
         assertTrue(isPlaying);
-    }*/
-
+    }
+*/
     @Test
     public void velocityMusicFast() {
         SystemClock.sleep(100);
