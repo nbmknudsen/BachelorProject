@@ -37,7 +37,6 @@ public class PlayHapticsInstrumentedTest {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         playHaptics = new PlayHaptics();
         playHaptics.init(context, R.raw.haptics_round_canvas_f);
-        playHaptics.startPlaying(context);
     }
 
     @Test

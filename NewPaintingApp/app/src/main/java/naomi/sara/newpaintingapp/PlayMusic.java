@@ -21,7 +21,7 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
     private MediaPlayer mediaPlayer;
     private AudioManager manager;
     private boolean isPlaying = false;
-    private float volume = 0;
+    private float volume = 0f;
 
     /**
      * Creates a MediaPlayer instance and initialize it with different parameters

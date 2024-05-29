@@ -5,6 +5,9 @@
       <entry key="ControlFeedbackInstrumentedTest">
         <State />
       </entry>
+      <entry key="DrawingViewInstrumentedTest">
+        <State />
+      </entry>
       <entry key="PlayHapticsInstrumentedTest">
         <State />
       </entry>
@@ -15,9 +18,6 @@
         <State />
       </entry>
       <entry key="initializeHaptics()">
-        <State />
-      </entry>
-      <entry key="startPlayingPreferredDevice()">
         <State />
       </entry>
     </value>

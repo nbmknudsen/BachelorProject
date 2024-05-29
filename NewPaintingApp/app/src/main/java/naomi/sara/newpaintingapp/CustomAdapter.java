@@ -34,7 +34,7 @@ public class CustomAdapter extends BaseAdapter {
     }
 
     /**
-     *
+     * It is required to override the BaseAdapters getCount() method.
      * @return The number of canvas items that are in the canvas picture array
      */
     @Override
@@ -43,24 +43,24 @@ public class CustomAdapter extends BaseAdapter {
     }
 
     /**
-     *
+     * It is required to override the BaseAdapters getItem() method.
      * @param i Position of the item whose data we want within the adapter's
      * data set.
-     * @return null
+     * @return The canvas picture at the position, i, in array
      */
     @Override
     public Object getItem(int i) {
-        return null;
+        return canvases[i];
     }
 
     /**
-     *
+     * It is required to override the BaseAdapters getItemId() method.
      * @param i The position of the item within the adapter's data set whose row id we want.
-     * @return 0
+     * @return i
      */
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
     /**

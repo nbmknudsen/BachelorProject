@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        drawingView = findViewById(R.id.drawingView);
 
         // Toolbar setup as here:
         // https://developer.android.com/develop/ui/views/components/appbar/setting-up
@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
 
-        drawingView = findViewById(R.id.drawingView);
         // Dictates what happens when the clear_button is clicked
         Button clear = (Button) findViewById(R.id.clear_button);
         clear.setOnClickListener(v -> {
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Initializes the contents of the menu. These are the different spinners.
-     * @param menu The options menu in which spinner items is placed.
+     * @param menu The options menu in which spinner items are placed.
      * @return true
      */
     @Override
@@ -93,27 +92,27 @@ public class MainActivity extends AppCompatActivity {
         canvasNames = getResources().getStringArray(R.array.canvasNames);
         CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), canvases, canvasNames);
         canvas_options.setAdapter(customAdapter);
-        canvas_spinner_selection();
+        canvasSpinnerSelection();
 
         // Color spinner
         color_options = (Spinner) menu.findItem(R.id.color_dropdown).getActionView();
         colorArray = getResources().getStringArray(R.array.colorValues);
         CustomColorAdapter colorAdapter = new CustomColorAdapter(getApplicationContext(), colorArray);
         color_options.setAdapter(colorAdapter);
-        color_spinner_selection();
+        colorSpinnerSelection();
 
         // Brush spinner
         brush_options = (Spinner) menu.findItem(R.id.brush_dropdown).getActionView();
         CustomBrushAdapter brushAdapter = new CustomBrushAdapter(getApplicationContext(), brushes);
         brush_options.setAdapter(brushAdapter);
-        brush_spinner_selection();
+        brushSpinnerSelection();
         return true;
     }
 
     /**
      * Dictates what should be done when a canvas is selected in the spinner.
      */
-    private void canvas_spinner_selection() {
+    private void canvasSpinnerSelection() {
         canvas_options.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()  {
             /**
              * Overrides the onItemSelected function of the Spinner class'
@@ -124,29 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 // Write something on screen with small icon
                 /*Toast.makeText(getApplicationContext(), canvasNames[position], Toast.LENGTH_LONG).show();*/
                 /*drawingView = findViewById(R.id.drawingView);*/
-
-                switch(canvasNames[position]) {//switch(chosen_canvas) {
-                    case "Wood":
-                        drawingView.chosenBackground = 0;
-                        drawingView.clearView();
-                        break;
-                    //should be canvas
-                    case "Granite":
-                        drawingView.chosenBackground = 1;
-                        drawingView.clearView();
-                        break;
-                    // Should be silk
-                    case "Textile":
-                        drawingView.chosenBackground = 2;
-                        drawingView.clearView();
-                        break;
-                    case "Glass":
-                        drawingView.chosenBackground = 3;
-                        drawingView.clearView();
-                        break;
-                    default:
-                        drawingView.chosenBackground = 0;
-                }
+                drawingView.changeCanvas(position);
             }
 
             /**
@@ -155,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                drawingView.chosenBackground = 0;
+                //drawingView.changeCanvas(0);
             }
         });
     }
@@ -163,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Dictates what should be done when a color is selected in the spinner.
      */
-    private void color_spinner_selection() {
+    private void colorSpinnerSelection() {
         color_options.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()  {
             /**
              * Overrides the onItemSelected function of the Spinner class'
@@ -181,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                drawingView.changeColor(Color.BLACK);
+                //drawingView.changeColor(Color.BLACK);
             }
         });
     }
@@ -189,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Dictates what should be done when a brush is selected in the spinner.
      */
-    private void brush_spinner_selection() {
+    private void brushSpinnerSelection() {
         brush_options.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()  {
             /**
              * Overrides the onItemSelected function of the Spinner class'
@@ -202,21 +179,18 @@ public class MainActivity extends AppCompatActivity {
                 switch(position) {
                     // round (thin) brush
                     case 0:
-                        drawingView.chosenBrush = position;
-                        drawingView.changeBrush(40, Paint.Cap.ROUND);
+                        drawingView.changeBrush(40, Paint.Cap.ROUND, position);
                         break;
                     // flat brush
                     case 1:
-                        drawingView.chosenBrush = position;
-                        drawingView.changeBrush(80, Paint.Cap.SQUARE);
+                        drawingView.changeBrush(80, Paint.Cap.SQUARE, position);
                         break;
                     // filbert (round) brush
                     case 2:
-                        drawingView.chosenBrush = position;
-                        drawingView.changeBrush(80, Paint.Cap.ROUND);
+                        drawingView.changeBrush(80, Paint.Cap.ROUND, position);
                         break;
                     default:
-                        drawingView.chosenBrush = 0;
+                        drawingView.changeBrush(40, Paint.Cap.ROUND, position);
                 }
             }
 
@@ -226,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                drawingView.chosenBrush = 0;
+                //drawingView.changeBrush(40, Paint.Cap.ROUND, 0);
             }
         });
     }

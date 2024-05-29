@@ -54,10 +54,10 @@ public class DrawingView extends View {
 
 
     // Current background variable. Is initialized to 0 which is Wood.
-    public int chosenBackground = 0;
+    private int chosenBackground = 0;
 
     // Current brush variable. Is initialized to 0 which is thin (round) brush.
-    public int chosenBrush = 0;
+    private int chosenBrush = 0;
 
     // Instance of PlaySound class - parametric model not in use
     //final PlaySound playSound = new PlaySound();
@@ -67,7 +67,7 @@ public class DrawingView extends View {
     private final PlayMusic playMusicMedium = new PlayMusic();
     private final PlayMusic playMusicSlow = new PlayMusic();
     private final PlayHaptics playHapticsFast = new PlayHaptics();
-    private final PlayHaptics playHapticsMedium = new PlayHaptics();
+    private PlayHaptics playHapticsMedium = new PlayHaptics();
     private final PlayHaptics playHapticsSlow = new PlayHaptics();
 
     // Velocity tracker
@@ -144,6 +144,10 @@ public class DrawingView extends View {
         //drawCanvas = new Canvas(); // draw new canvas when change orientation of screen
     }
 
+    public void changeCanvas(int canvasIndex) {
+        chosenBackground = canvasIndex;
+        clearView();
+    }
     /**
      * Changes the current color. It also adds a new type of Path to the Path list as well as a
      * brush type to the list of brush types and brush color to the list of colors. This is done so
@@ -168,7 +172,8 @@ public class DrawingView extends View {
      * @param cap   The type of brush head. Dictates what the the beginning and end of the stroke
      *              looks like
      */
-    public void changeBrush(int width, Paint.Cap cap) {
+    public void changeBrush(int width, Paint.Cap cap, int brushIndex) {
+        chosenBrush = brushIndex;
         currentBrush = new Pair<>(width, cap);
         drawPath = new Path();
         brushes.add(currentBrush);
@@ -185,6 +190,11 @@ public class DrawingView extends View {
     public Path getPath() {
         return drawPath;
     }
+
+    public int getCanvas() {
+        return chosenBackground;
+    }
+
 
     /**
      * Overrides the onDraw function of the view class. It is used to draw the canvas background
@@ -234,11 +244,11 @@ public class DrawingView extends View {
                     velocityTracker = VelocityTracker.obtain();
                 }
                 drawPath.moveTo(touchX, touchY);
-                //initializeHaptics();
-                feedbackController.initializeMusic(playMusicFast, playMusicMedium,
-                        playMusicSlow, this.getContext(), chosenBrush, chosenBackground);
-                feedbackController.initializeHaptics(playHapticsFast, playHapticsMedium,
-                        playHapticsSlow, this.getContext(), chosenBrush, chosenBackground);
+
+                feedbackController.initializeFeedback(playMusicFast, playMusicMedium,
+                        playMusicSlow, this.getContext(), chosenBrush, chosenBackground, "sound");
+                feedbackController.initializeFeedback(playHapticsFast, playHapticsMedium,
+                        playHapticsSlow, this.getContext(), chosenBrush, chosenBackground, "haptics");
 
                 invalidate();
                 break;
@@ -248,9 +258,9 @@ public class DrawingView extends View {
                     public void run() {
                         velocity = getVelocity(event, pointerId);
                         //Log.d("VELOCITY", "Velocity: " + velocity);
-                        feedbackController.velocityMusic(velocity, playMusicFast, playMusicMedium,
+                        feedbackController.velocityFeedback(velocity, playMusicFast, playMusicMedium,
                                 playMusicSlow);
-                        feedbackController.velocityHaptics(velocity, playHapticsFast, playHapticsMedium,
+                        feedbackController.velocityFeedback(velocity, playHapticsFast, playHapticsMedium,
                                 playHapticsSlow);
                     }
                 }, 10);
@@ -301,12 +311,11 @@ public class DrawingView extends View {
         // When you want to determine the velocity, call computeCurrentVelocity(). Then
         // call getXVelocity() and getYVelocity() to retrieve the velocity for each pointer ID.
         velocityTracker.computeCurrentVelocity(1000);
-        // Log velocity of pixels per second. It's best practice to use
-        // VelocityTrackerCompat where possible.
+
+        // Velocity of pixels per second.
         float velocityX = velocityTracker.getXVelocity(pointerId);
         float velocityY = velocityTracker.getYVelocity(pointerId);
-        //Log.d("VELOCITY", "Velocity: " + velocityMeter);
-        //1920 X 1200 PIXELS 0,225 X 0,135 M
+        // 1920 X 1200 pixels 0,225 X 0,135 m
         return Math.hypot(velocityX, velocityY) * (0.225/1920);
     }
 }

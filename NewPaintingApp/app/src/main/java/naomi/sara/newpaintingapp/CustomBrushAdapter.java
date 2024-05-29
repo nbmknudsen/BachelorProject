@@ -28,7 +28,7 @@ public class CustomBrushAdapter extends BaseAdapter {
     }
 
     /**
-     *
+     * It is required to override the BaseAdapters getCount() method.
      * @return The number of brush items that are in the brush picture array
      */
     @Override
@@ -37,7 +37,7 @@ public class CustomBrushAdapter extends BaseAdapter {
     }
 
     /**
-     *
+     * It is required to override the BaseAdapters getItem() method.
      * @param i Position of the item whose data we want within the adapter's
      * data set.
      * @return null
@@ -48,7 +48,7 @@ public class CustomBrushAdapter extends BaseAdapter {
     }
 
     /**
-     *
+     * It is required to override the BaseAdapters getItemId() method.
      * @param i The position of the item within the adapter's data set whose row id we want.
      * @return 0
      */

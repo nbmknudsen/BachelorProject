@@ -26,9 +26,6 @@ public class ControlFeedbackInstrumentedTest {
     PlayMusic playMusicMedium;
     PlayMusic playMusicSlow;
 
-    PlayHaptics playHapticsFast;
-    PlayHaptics playHapticsMedium;
-    PlayHaptics playHapticsSlow;
     int chosenBrush;
     int chosenBackground;
     Context context;
@@ -45,47 +42,29 @@ public class ControlFeedbackInstrumentedTest {
         chosenBrush = 0;
         chosenBackground = 0;
 
-        controlFeedback.initializeMusic(playMusicFast, playMusicMedium, playMusicSlow, context,
-                chosenBrush, chosenBackground);
+        controlFeedback.initializeFeedback(playMusicFast, playMusicMedium, playMusicSlow, context,
+                chosenBrush, chosenBackground, "haptics");
         //SystemClock.sleep(100);
     }
 
-    /*@Test
-    public void initializeMusic() {
-        controlFeedback.initializeMusic(playMusicFast, playMusicMedium, playMusicSlow, context,
-                chosenBrush, chosenBackground);
+    @Test
+    public void initializeFeedback() {
+        /*controlFeedback.initializeFeedback(playMusicFast, playMusicMedium, playMusicSlow, context,
+                chosenBrush, chosenBackground, "haptics");*/
         //SystemClock.sleep(1000);
         SystemClock.sleep(1000);
         boolean isPlaying = playMusicFast.isPlaying() && playMusicMedium.isPlaying() &&
                 playMusicSlow.isPlaying();
-        System.out.printf("Fast: %b, medium: %b, slow: %b%n", playMusicFast.isPlaying(), playMusicMedium.isPlaying(), playMusicSlow.isPlaying());
         assertTrue(isPlaying);
     }
-*/
+
     @Test
-    public void velocityMusicFast() {
+    public void velocityFeedback() {
         SystemClock.sleep(100);
-        controlFeedback.velocityMusic(0.06, playMusicFast, playMusicMedium, playMusicSlow);
+        controlFeedback.velocityFeedback(0.06, playMusicFast, playMusicMedium, playMusicSlow);
         boolean fastIsPlaying = playMusicFast.getVolume() == 1 && playMusicMedium.getVolume() == 0
                 && playMusicSlow.getVolume() == 0;
         assertTrue(fastIsPlaying);
     }
 
-    @Test
-    public void velocityMusicMedium() {
-        SystemClock.sleep(100);
-        controlFeedback.velocityMusic(0.03, playMusicFast, playMusicMedium, playMusicSlow);
-        boolean mediumIsPlaying = playMusicFast.getVolume() == 0 && playMusicMedium.getVolume() == 1
-                && playMusicSlow.getVolume() == 0;
-        assertTrue(mediumIsPlaying);
-    }
-
-    @Test
-    public void velocityMusicSlow() {
-        SystemClock.sleep(100);
-        controlFeedback.velocityMusic(0.015, playMusicFast, playMusicMedium, playMusicSlow);
-        boolean slowIsPlaying = playMusicFast.getVolume() == 0 && playMusicMedium.getVolume() == 0
-                && playMusicSlow.getVolume() == 1;
-        assertTrue(slowIsPlaying);
-    }
 }

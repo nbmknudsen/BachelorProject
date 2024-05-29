@@ -8,8 +8,8 @@
     <string name="brush">Brush</string>
     <string-array name="canvasNames">
         <item>Wood</item>
-        <item>Granite</item>
-        <item>Textile</item>
+        <item>Canvas</item>
+        <item>Silk</item>
         <item>Glass</item>
     </string-array>
 
