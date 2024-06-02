@@ -28,8 +28,8 @@
 
     <string-array name="colorValues">
         <item>#000000</item>
-        <item>#FF0000</item>
-        <item>#FFFF00</item>
-        <item>#0000FF</item>
+        <item>#A91820</item>
+        <item>#EFEF53</item>
+        <item>#2424AC</item>
     </string-array>
 </resources>

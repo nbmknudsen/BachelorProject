@@ -44,9 +44,9 @@ public class DrawingView extends View {
     private final Resources res = getResources();
 
     // Backgrounds
-    private final Drawable background = ResourcesCompat.getDrawable(res, R.drawable.g4_wood_type_silver_oak, null);
-    private final Drawable background1 = ResourcesCompat.getDrawable(res, R.drawable.g2_granite_type_veneziano, null);
-    private final Drawable background2 = ResourcesCompat.getDrawable(res, R.drawable.g9_textile_version2, null);
+    private final Drawable background = ResourcesCompat.getDrawable(res, R.drawable.wood, null);
+    private final Drawable background1 = ResourcesCompat.getDrawable(res, R.drawable.canvas, null);
+    private final Drawable background2 = ResourcesCompat.getDrawable(res, R.drawable.silk, null);
     private final Drawable background3 = ResourcesCompat.getDrawable(res, R.drawable.glass_plate_background, null);
 
     // Background array
@@ -69,6 +69,8 @@ public class DrawingView extends View {
     private final PlayHaptics playHapticsFast = new PlayHaptics();
     private PlayHaptics playHapticsMedium = new PlayHaptics();
     private final PlayHaptics playHapticsSlow = new PlayHaptics();
+
+    private final PlayClip clip = new PlayClip();
 
     // Velocity tracker
     private VelocityTracker velocityTracker = null;
@@ -138,10 +140,7 @@ public class DrawingView extends View {
      */
     @Override
     protected void onSizeChanged(int w, int h, int old_w, int old_h) {
-        drawCanvas.save();
         super.onSizeChanged(w, h, old_w, old_h);
-        drawCanvas.restore();
-        //drawCanvas = new Canvas(); // draw new canvas when change orientation of screen
     }
 
     public void changeCanvas(int canvasIndex) {
@@ -245,11 +244,11 @@ public class DrawingView extends View {
                 }
                 drawPath.moveTo(touchX, touchY);
 
-                feedbackController.initializeFeedback(playMusicFast, playMusicMedium,
-                        playMusicSlow, this.getContext(), chosenBrush, chosenBackground, "sound");
+                /*feedbackController.initializeFeedback(playMusicFast, playMusicMedium,
+                        playMusicSlow, this.getContext(), chosenBrush, chosenBackground, "sound");*/
                 feedbackController.initializeFeedback(playHapticsFast, playHapticsMedium,
                         playHapticsSlow, this.getContext(), chosenBrush, chosenBackground, "haptics");
-
+                feedbackController.initializeClip(clip, this.getContext(), chosenBrush, chosenBackground, "sound");
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -258,23 +257,26 @@ public class DrawingView extends View {
                     public void run() {
                         velocity = getVelocity(event, pointerId);
                         //Log.d("VELOCITY", "Velocity: " + velocity);
-                        feedbackController.velocityFeedback(velocity, playMusicFast, playMusicMedium,
-                                playMusicSlow);
+                        /*feedbackController.velocityFeedback(velocity, playMusicFast, playMusicMedium,
+                                playMusicSlow);*/
                         feedbackController.velocityFeedback(velocity, playHapticsFast, playHapticsMedium,
                                 playHapticsSlow);
+                        clip.setVolume(velocity);
                     }
                 }, 10);
+
 
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                playMusicFast.pausePlaying();
+                /*playMusicFast.pausePlaying();
                 playMusicMedium.pausePlaying();
-                playMusicSlow.pausePlaying();
+                playMusicSlow.pausePlaying();*/
 
                 playHapticsFast.pausePlaying();
                 playHapticsMedium.pausePlaying();
                 playHapticsSlow.pausePlaying();
+                clip.pausePlaying();
                 invalidate();
                 break;
             case MotionEvent.ACTION_CANCEL:

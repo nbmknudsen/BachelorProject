@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
-import android.media.AudioDeviceInfo;
 import android.media.MediaPlayer;
 import android.os.SystemClock;
 

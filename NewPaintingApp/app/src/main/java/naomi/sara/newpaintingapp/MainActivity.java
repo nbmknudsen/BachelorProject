@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawingView drawingView;
 
     String[] canvasNames;
-    int[] canvases = {R.drawable.g4_wood_type_silver_oak, R.drawable.g2_granite_type_veneziano,
-                      R.drawable.g9_textile_version2, R.drawable.glass_plate_background};
+    int[] canvases = {R.drawable.wood, R.drawable.canvas,
+                      R.drawable.silk, R.drawable.glass_plate_background};
     Spinner canvas_options;
 
     int[] brushes = {R.drawable.round_brush, R.drawable.flat_brush,

@@ -10,8 +10,8 @@ import android.os.Build;
  */
 public class ControlFeedback {
     //  Array of brush names and array of canvas names
-    String[] brushNames = new String[] {"thin", "square", "round"};;
-    String[] canvasNames = new String[] {"wood", "canvas", "silk", "glass"};;
+    String[] brushNames = new String[] {"thin", "square", "round"};
+    String[] canvasNames = new String[] {"wood", "canvas", "silk", "glass"};
 
     // Variables needed for the PlaySound class - parametric mode
     private int sampleRate;
@@ -19,6 +19,25 @@ public class ControlFeedback {
     private int amplitude;
     private int frequency;
 
+
+    public void initializeClip(PlayClip clip, Context context, int chosenBrush, int chosenBackground, String soundType) {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+            (new Thread(()-> {
+            int fastSound = context.getResources().getIdentifier(soundType + "_" +
+                            brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_f",
+                    "raw", context.getPackageName());
+            int mediumSound = context.getResources().getIdentifier(soundType + "_" +
+                            brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_m",
+                    "raw", context.getPackageName());
+            int slowSound = context.getResources().getIdentifier(soundType + "_" +
+                            brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s",
+                    "raw", context.getPackageName());
+
+            clip.init(context, fastSound, mediumSound, slowSound);
+
+            })).start();
+        }
+    }
 
     /**
      * Method used to initialize and start the MediaPlayer in the different PlayHaptics instances.
