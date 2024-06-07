@@ -249,7 +249,7 @@ public class DrawingView extends View {
 
                 feedbackController.initializeFeedback(playHapticsFast, playHapticsMedium,
                         playHapticsSlow, this.getContext(), chosenBrush, chosenBackground, "haptics");
-                feedbackController.initializeClip(playMusic, this.getContext(), chosenBrush, chosenBackground);
+                feedbackController.initializeMusic(playMusic, this.getContext(), chosenBrush, chosenBackground);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:

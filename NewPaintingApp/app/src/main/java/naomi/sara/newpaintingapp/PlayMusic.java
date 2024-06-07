@@ -13,7 +13,7 @@ import androidx.annotation.RequiresApi;
 /**
  * Class used to play auditory feedback. The class implements the PlayInterface interface.
  */
-public class PlayMusic { //implements AudioRouting
+public class PlayMusic {
     private boolean isPlaying = false;
 
     private AudioManager manager;
@@ -33,8 +33,7 @@ public class PlayMusic { //implements AudioRouting
     int slowVol;
 
     /**
-     * Creates a SoundPool instance and initialize it with different parameters
-     *
+     * Creates a SoundPool instance and initialize it with different parameters.
      * @param context Context - used to create a Uri
      */
     @RequiresApi(api = Build.VERSION_CODES.S)
@@ -67,49 +66,36 @@ public class PlayMusic { //implements AudioRouting
     }
 
     /**
-     * Plays the MediaPlayer instance and sets the variable isPLaying to true, so we know if the
-     * MediaPlayer is playing. Sets the bluetooth headset as the preferred device to send sound.
-     *
+     * Plays the SoundPool instance and sets the variable isPLaying to true, so we know if the
+     * SoundPool is playing. This is only done if an aux line isn't connected.
      * @param context Context - used to check if device is connected to bluetooth
      */
     public void startPlaying(Context context) {
-        AudioDeviceInfo bt_headset = findAudioDevice(AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, context);
+        AudioDeviceInfo aux_line = findAudioDevice(AudioDeviceInfo.TYPE_WIRED_HEADPHONES, context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (bt_headset == null) {
-                //AudioDeviceInfo speaker = findAudioDevice(AudioDeviceInfo.TYPE_BUILTIN_SPEAKER, context);
-                manager.setSpeakerphoneOn(true);
-
-                //mediaPlayer.setPreferredDevice(speaker);
+            if (aux_line != null) {
+                return;
             } else {
-                Log.d("BLUETOOTH CONNECTION", String.valueOf(bt_headset.getType()));
-                //setPreferredDevice(bt_headset);
                 manager.setSpeakerphoneOn(true);
-                /*manager.setMode(AudioManager.MODE_NORMAL);
-                manager.setSpeakerphoneOn(false);
-                manager.setCommunicationDevice(bt_headset);*/
 
-
-
+                soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                    @Override
+                    public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                        Log.d("LOAD", fastSoundID + ", " + mediumSoundID + ", " + slowSoundID);
+                        isPlaying = true;
+                        fastStreamID = soundPool.play(fastSoundID, 0.0f, 0.0f, 0, -1,1.0f);
+                        mediumStreamID = soundPool.play(mediumSoundID, 0.0f, 0.0f, 0, -1,1.0f);
+                        slowStreamID = soundPool.play(slowSoundID, 0.0f, 0.0f, 0, -1,1.0f);
+                    }
+                });
             }
         }
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                Log.d("LOAD", fastSoundID + ", " + mediumSoundID + ", " + slowSoundID);
-                isPlaying = true;
-                fastStreamID = soundPool.play(fastSoundID, 0.0f, 0.0f, 0, -1,1.0f);
-                mediumStreamID = soundPool.play(mediumSoundID, 0.0f, 0.0f, 0, -1,1.0f);
-                slowStreamID = soundPool.play(slowSoundID, 1.0f, 1.0f, 0, -1,1.0f);
-            }
-        });
     }
 
     /**
-     * Sets the left and right volume of the MediaPLayer. We use this to mute the players we don't
-     * want to hear and unmute when we want to hear the players again. 0 is mute and 1 is unmute.
-     *
+     * Sets the left and right volume of the different streams. We use this to mute the streams we
+     * don't want to hear and unmute when we want to hear the streams again. 0 is mute and 1 is unmute.
      * @param velocity  velocity
-     *
      */
     public void setVolume(double velocity) {
         if (soundPool != null) {
@@ -140,8 +126,8 @@ public class PlayMusic { //implements AudioRouting
 
 
     /**
-     * Pauses the MediaPlayer instance and sets the variable isPLaying to false, so we know that the
-     * MediaPlayer isn't playing.
+     * Pauses all the streams playing with the SoundPool instance and sets the variable isPLaying to
+     * false, so we know that the streams isn't playing.
      */
     public void pausePlaying(){
         isPlaying = false;
@@ -153,9 +139,9 @@ public class PlayMusic { //implements AudioRouting
     }
 
     /**
-     * Stops the MediaPlayer instance and sets the variable isPLaying to false, so we know that the
-     * MediaPlayer isn't playing. It also releases the MediaPlayer resources so it have to be
-     * initialized again.
+     * Stops all the streams playing with the SoundPool instance and sets the variable isPLaying to
+     * false, so we know that the streams isn't playing.
+     * It also releases the SoundPool resources so it has to be initialized again.
      */
     public void stopPlaying() {
         if (isPlaying) {

@@ -98,6 +98,7 @@ public class PlayHaptics {
     /**
      * Stops the MediaPlayer instance and sets the variable isPLaying to false, so we know that the
      * MediaPlayer isn't playing.
+     * It also releases the MediaPlayer resources so it has to be initialized again.
      */
     public void stopPlaying() {
         if (isPlaying) {

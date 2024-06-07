@@ -21,6 +21,10 @@ public class ControlFeedbackInstrumentedTest {
     ControlFeedback controlFeedback;
     PlayMusic playMusic;
 
+    PlayHaptics playFast;
+    PlayHaptics playMedium;
+    PlayHaptics playSlow;
+
     int chosenBrush;
     int chosenBackground;
     Context context;
@@ -29,22 +33,33 @@ public class ControlFeedbackInstrumentedTest {
     public void setUp() {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         controlFeedback = new ControlFeedback();
-        playMusic = new PlayMusic();
 
+        playMusic = new PlayMusic();
         chosenBrush = 0;
         chosenBackground = 0;
-        controlFeedback.initializeClip(playMusic, context, chosenBrush, chosenBackground);
+        controlFeedback.initializeMusic(playMusic, context, chosenBrush, chosenBackground);
 
-        //SystemClock.sleep(100);
+        playFast = new PlayHaptics();
+        playMedium = new PlayHaptics();
+        playSlow = new PlayHaptics();
+        playFast.init(context, R.raw.sound_round_canvas_f);
+        playMedium.init(context, R.raw.sound_round_canvas_m);
+        playMedium.init(context, R.raw.sound_round_canvas_s);
+
     }
 
     @Test
-    public void initializeClip() {
-        SystemClock.sleep(1000);
+    public void initializeMusic() {
+        // Need to wait a bit for MediaPLayer to be prepared
+        SystemClock.sleep(200);
         assertTrue(playMusic.isPlaying());
     }
 
-
-
-
+    @Test
+    public void velocityFeedback() {
+        controlFeedback.velocityFeedback(0.06, playFast, playMedium, playSlow);
+        boolean volume = playFast.getVolume() == 1.0f && playMedium.getVolume() == 0.0f  &&
+                playMedium.getVolume() == 0.0f;
+        assertEquals(true, volume);
+    }
 }

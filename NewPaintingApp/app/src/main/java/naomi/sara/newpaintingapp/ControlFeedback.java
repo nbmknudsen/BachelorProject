@@ -19,8 +19,15 @@ public class ControlFeedback {
     private int amplitude;
     private int frequency;
 
-
-    public void initializeClip(PlayMusic clip, Context context, int chosenBrush, int chosenBackground) {
+    /**
+     * Method used to initialize and start the SoundPool in the PlayMusic instance.
+     * @param clip                Instance of the PlayMusic class. Plays the fast, medium and slow sounds
+     * @param context             Context of the DrawingView class need to retrieve the haptics
+     *                            sound files
+     * @param chosenBrush         The brush chosen in the brush spinner
+     * @param chosenBackground    The canvas chosen in the canvas spinner
+     */
+    public void initializeMusic(PlayMusic clip, Context context, int chosenBrush, int chosenBackground) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
             (new Thread(()-> {
                 int fastSound = context.getResources().getIdentifier("haptics_" +
@@ -41,14 +48,14 @@ public class ControlFeedback {
 
     /**
      * Method used to initialize and start the MediaPlayer in the different PlayHaptics instances.
-     * This also mutes the fast and medium haptics, while keeping the slow haptics unmuted.
-     * @param playFast            Instance of a class that implements PlayInterface. Plays the fast
-     *                            haptics/sounds
-     * @param playMedium          Instance of a class that implements PlayInterface. Plays the medium
-     *                            haptics/sounds
-     * @param playSlow            Instance of a class that implements PlayInterface. Plays the slow
-     *                            haptics/sounds
-     * @param context             Context of the DrawingView class need to retrieve the haptics
+     * This also mutes the fast, medium and slow haptics.
+     * @param playFast            Instance of the class PlayHaptics. Plays the fast
+     *                            haptics
+     * @param playMedium          Instance of the class PlayHaptics. Plays the medium
+     *                            haptics
+     * @param playSlow            Instance of the class PlayHaptics. Plays the slow
+     *                            haptics
+     * @param context             Context of the DrawingView class need to retrieve the haptic
      *                            sound files
      * @param chosenBrush         The brush chosen in the brush spinner
      * @param chosenBackground    The canvas chosen in the canvas spinner
@@ -77,7 +84,7 @@ public class ControlFeedback {
 
                 playSlow.init(context, slowSound);
                 playSlow.startPlaying(context);
-                playSlow.setVolume(1.0f,1.0f);
+                playSlow.setVolume(0.0f,0.0f);
 
             })).start();
         }
