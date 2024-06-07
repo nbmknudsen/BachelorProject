@@ -1,5 +1,7 @@
 package naomi.sara.newpaintingapp;
 
+import static java.lang.Math.abs;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,14 +12,17 @@ import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 /**
@@ -63,14 +68,11 @@ public class DrawingView extends View {
     //final PlaySound playSound = new PlaySound();
 
     // Instance of PlayMusic and PlayHaptics class - datadriven model
-    private final PlayMusic playMusicFast = new PlayMusic();
-    private final PlayMusic playMusicMedium = new PlayMusic();
-    private final PlayMusic playMusicSlow = new PlayMusic();
     private final PlayHaptics playHapticsFast = new PlayHaptics();
     private PlayHaptics playHapticsMedium = new PlayHaptics();
     private final PlayHaptics playHapticsSlow = new PlayHaptics();
 
-    private final PlayClip clip = new PlayClip();
+    private final PlayMusic playMusic = new PlayMusic();
 
     // Velocity tracker
     private VelocityTracker velocityTracker = null;
@@ -234,6 +236,7 @@ public class DrawingView extends View {
         float touchY = event.getY();
         int index = event.getActionIndex();
         int pointerId = event.getPointerId(index);
+        Log.d("ACTION EVENT IS", String.valueOf(event.getActionMasked()));
 
 
         switch(event.getAction()){
@@ -244,11 +247,9 @@ public class DrawingView extends View {
                 }
                 drawPath.moveTo(touchX, touchY);
 
-                /*feedbackController.initializeFeedback(playMusicFast, playMusicMedium,
-                        playMusicSlow, this.getContext(), chosenBrush, chosenBackground, "sound");*/
                 feedbackController.initializeFeedback(playHapticsFast, playHapticsMedium,
                         playHapticsSlow, this.getContext(), chosenBrush, chosenBackground, "haptics");
-                feedbackController.initializeClip(clip, this.getContext(), chosenBrush, chosenBackground, "sound");
+                feedbackController.initializeClip(playMusic, this.getContext(), chosenBrush, chosenBackground);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -256,12 +257,24 @@ public class DrawingView extends View {
                 new Handler().postDelayed(new Runnable() {
                     public void run() {
                         velocity = getVelocity(event, pointerId);
-                        //Log.d("VELOCITY", "Velocity: " + velocity);
-                        /*feedbackController.velocityFeedback(velocity, playMusicFast, playMusicMedium,
-                                playMusicSlow);*/
-                        feedbackController.velocityFeedback(velocity, playHapticsFast, playHapticsMedium,
-                                playHapticsSlow);
-                        clip.setVolume(velocity);
+                        if (velocity < 0.005f && event.getHistorySize() > 1) {
+                            float hisTouchX = event.getHistoricalX(event.getPointerCount() - 1, event.getHistorySize() - 1);
+                            float hisTouchY = event.getHistoricalY(event.getPointerCount() - 1, event.getHistorySize() - 1);
+
+                            if (abs(hisTouchX - touchX) < 30.0f && abs(hisTouchY - touchY) < 50.0f) {
+                                playHapticsFast.setVolume(0f, 0f);
+                                playHapticsMedium.setVolume(0f, 0f);
+                                playHapticsSlow.setVolume(0f, 0f);
+                            } else {
+                                feedbackController.velocityFeedback(velocity, playHapticsFast,
+                                        playHapticsMedium, playHapticsSlow);
+                                playMusic.setVolume(velocity);
+                            }
+                        } else {
+                            feedbackController.velocityFeedback(velocity, playHapticsFast,
+                                    playHapticsMedium, playHapticsSlow);
+                            playMusic.setVolume(velocity);
+                        }
                     }
                 }, 10);
 
@@ -269,22 +282,28 @@ public class DrawingView extends View {
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                /*playMusicFast.pausePlaying();
-                playMusicMedium.pausePlaying();
-                playMusicSlow.pausePlaying();*/
-
+                playMusic.pausePlaying();
                 playHapticsFast.pausePlaying();
                 playHapticsMedium.pausePlaying();
                 playHapticsSlow.pausePlaying();
-                clip.pausePlaying();
                 invalidate();
                 break;
             case MotionEvent.ACTION_CANCEL:
+                playMusic.pausePlaying();
+                playHapticsFast.pausePlaying();
+                playHapticsMedium.pausePlaying();
+                playHapticsSlow.pausePlaying();
                 // Return a VelocityTracker object back to be re-used by others.
                 velocityTracker.recycle();
+                invalidate();
                 break;
-            default:
-                return false;
+
+            case MotionEvent.ACTION_OUTSIDE:
+                playMusic.pausePlaying();
+                playHapticsFast.pausePlaying();
+                playHapticsMedium.pausePlaying();
+                playHapticsSlow.pausePlaying();
+                invalidate();
         }
 
         invalidate();

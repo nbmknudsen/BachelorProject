@@ -1,51 +1,69 @@
 package naomi.sara.newpaintingapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
+import android.media.SoundPool;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import java.io.IOException;
-
 /**
  * Class used to play auditory feedback. The class implements the PlayInterface interface.
  */
-public class PlayMusic implements PlayInterface { //extends Activity The class inherits from the Activity class.
-    private MediaPlayer mediaPlayer;
-    private AudioManager manager;
+public class PlayMusic { //implements AudioRouting
     private boolean isPlaying = false;
-    private float volume = 0f;
+
+    private AudioManager manager;
+
+    private SoundPool soundPool;
+
+    int fastSoundID;
+    int mediumSoundID;
+    int slowSoundID;
+
+    int fastStreamID;
+    int mediumStreamID;
+    int slowStreamID;
+
+    int fastVol;
+    int mediumVol;
+    int slowVol;
 
     /**
-     * Creates a MediaPlayer instance and initialize it with different parameters
+     * Creates a SoundPool instance and initialize it with different parameters
      *
      * @param context Context - used to create a Uri
      */
     @RequiresApi(api = Build.VERSION_CODES.S)
-    public void init(Context context, int fileName) {
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.reset();
-        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .build());
+    public void init(Context context, int fileNameFast, int fileNameMedium, int fileNameSlow) {
+        manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        // setup Soundpool
+        soundPool = new SoundPool
+                .Builder()
+                .setMaxStreams(3)
+                .setAudioAttributes(new AudioAttributes.Builder()
+                                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                    .build())
+                .build();
 
-        Uri uri = Uri.parse("android.resource://" + context.getPackageName() + "/" + fileName);
         try {
-            mediaPlayer.setDataSource(context, uri);
-            mediaPlayer.prepareAsync();
-        } catch (IOException e) {
+            /*soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                @Override
+                public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                    startPlaying(context, fastSoundID, mediumSoundID, slowSoundID);
+                }
+            });*/
+            fastSoundID = soundPool.load(context, fileNameFast, 1);
+            mediumSoundID = soundPool.load(context, fileNameMedium, 1);
+            slowSoundID = soundPool.load(context, fileNameSlow, 1);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-
     }
 
     /**
@@ -56,23 +74,32 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
      */
     public void startPlaying(Context context) {
         AudioDeviceInfo bt_headset = findAudioDevice(AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (bt_headset == null) {
                 //AudioDeviceInfo speaker = findAudioDevice(AudioDeviceInfo.TYPE_BUILTIN_SPEAKER, context);
                 manager.setSpeakerphoneOn(true);
+
                 //mediaPlayer.setPreferredDevice(speaker);
             } else {
                 Log.d("BLUETOOTH CONNECTION", String.valueOf(bt_headset.getType()));
+                //setPreferredDevice(bt_headset);
+                manager.setSpeakerphoneOn(true);
+                /*manager.setMode(AudioManager.MODE_NORMAL);
+                manager.setSpeakerphoneOn(false);
+                manager.setCommunicationDevice(bt_headset);*/
 
-                    mediaPlayer.setPreferredDevice(bt_headset);
-                }
+
+
+            }
         }
-        mediaPlayer.setOnPreparedListener(mp -> {
-            if (!mp.isPlaying()) {
-                mp.setLooping(true);
-                mp.start();
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                Log.d("LOAD", fastSoundID + ", " + mediumSoundID + ", " + slowSoundID);
                 isPlaying = true;
-                volume = 1.0f;
+                fastStreamID = soundPool.play(fastSoundID, 0.0f, 0.0f, 0, -1,1.0f);
+                mediumStreamID = soundPool.play(mediumSoundID, 0.0f, 0.0f, 0, -1,1.0f);
+                slowStreamID = soundPool.play(slowSoundID, 1.0f, 1.0f, 0, -1,1.0f);
             }
         });
     }
@@ -81,13 +108,33 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
      * Sets the left and right volume of the MediaPLayer. We use this to mute the players we don't
      * want to hear and unmute when we want to hear the players again. 0 is mute and 1 is unmute.
      *
-     * @param leftVolume  Value of the wanted left volume. This should be the same as rightVolume.
-     * @param rightVolume Value of the wanted right volume This should be the same as leftVolume.
+     * @param velocity  velocity
+     *
      */
-    public void setVolume(float leftVolume, float rightVolume) {
-        if (mediaPlayer != null && leftVolume == rightVolume && (leftVolume == 0f || leftVolume == 1f)) {
-            mediaPlayer.setVolume(leftVolume, rightVolume);
-            volume = leftVolume;
+    public void setVolume(double velocity) {
+        if (soundPool != null) {
+            if (velocity > 0.045) {
+                soundPool.setVolume(fastStreamID, 1.0f, 1.0f);
+                soundPool.setVolume(mediumStreamID, 0.0f, 0.0f);
+                soundPool.setVolume(slowStreamID, 0.0f, 0.0f);
+                fastVol = 1;
+                mediumVol = 0;
+                slowVol = 0;
+            } else if (velocity > 0.025) {
+                soundPool.setVolume(fastStreamID, 0.0f,0.0f);
+                soundPool.setVolume(mediumStreamID,1.0f,1.0f);
+                soundPool.setVolume(slowStreamID, 0.0f,0.0f);
+                fastVol = 0;
+                mediumVol = 1;
+                slowVol = 0;
+            } else {
+                soundPool.setVolume(fastStreamID, 0.0f,0.0f);
+                soundPool.setVolume(mediumStreamID, 0.0f,0.0f);
+                soundPool.setVolume(slowStreamID,1.0f,1.0f);
+                fastVol = 0;
+                mediumVol = 0;
+                slowVol = 1;
+            }
         }
     }
 
@@ -97,10 +144,12 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
      * MediaPlayer isn't playing.
      */
     public void pausePlaying(){
-        if (isPlaying) {
-            isPlaying = false;
-            mediaPlayer.pause();
-        }
+        isPlaying = false;
+        soundPool.unload(fastSoundID);
+        soundPool.unload(mediumSoundID);
+        soundPool.unload(slowSoundID);
+        soundPool.autoPause();
+
     }
 
     /**
@@ -111,9 +160,11 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
     public void stopPlaying() {
         if (isPlaying) {
             isPlaying = false;
-            // Stop playing the audio data and release the resources
-            mediaPlayer.stop();
-            mediaPlayer.release();
+            soundPool.stop(fastStreamID);
+            soundPool.stop(mediumStreamID);
+            soundPool.stop(slowStreamID);
+            soundPool.release();
+            soundPool = null;
         }
     }
 
@@ -121,12 +172,18 @@ public class PlayMusic implements PlayInterface { //extends Activity The class i
         return isPlaying;
     }
 
-    public float getVolume() {
-        return volume;
+    public int getVolume(String SoundSpeedType) {
+        if (SoundSpeedType == "fast") {
+            return fastVol;
+        } else if (SoundSpeedType == "medium") {
+            return mediumVol;
+        } else {
+            return slowVol;
+        }
     }
 
-    public MediaPlayer getMediaPlayer() {
-        return mediaPlayer;
+    public SoundPool getSoundPool() {
+        return soundPool;
     }
 
     /** Function used to find out if it is possible to connect to specified device. Skeleton code

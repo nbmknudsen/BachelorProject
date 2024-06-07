@@ -3,6 +3,7 @@ package naomi.sara.newpaintingapp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -37,15 +38,6 @@ public class DrawingViewInstrumentedTest {
         path = drawingView.getPath();
     }
 
-    @Test
-    public void onSizeChanged() {
-        /*drawingView.onDraw(canvas);
-        Path oldPath = path;
-        drawingView.onSizeChanged(drawingView.getWidth(), drawingView.getHeight(),
-                drawingView.getWidth(), drawingView.getHeight());
-        Path newPath = drawingView.getPath();
-        assertEquals(oldPath, newPath);*/
-    }
 
     @Test
     public void changeCanvas() {

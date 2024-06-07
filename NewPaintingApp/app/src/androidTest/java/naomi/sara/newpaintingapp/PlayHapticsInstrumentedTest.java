@@ -2,6 +2,7 @@ package naomi.sara.newpaintingapp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
@@ -33,9 +34,15 @@ public class PlayHapticsInstrumentedTest {
     }
 
     @Test
+    public void init() {
+        assertNotEquals(null, playHaptics.getMediaPlayer());
+    }
+
+    @Test
     public void setVolume() {
         // Only checks if it sets variable volume to 1.0f when MediaPlayer isn't null
         playHaptics.setVolume(1.0f,1.0f);
         assertEquals(1.0f, playHaptics.getVolume(), 0.0);
     }
+
 }

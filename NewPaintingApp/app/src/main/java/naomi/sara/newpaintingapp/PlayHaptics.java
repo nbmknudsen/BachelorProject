@@ -13,9 +13,9 @@ import androidx.annotation.RequiresApi;
 import java.io.IOException;
 
 /**
- * Class used to play haptic feedback. The class implements the PlayInterface interface.
+ * Class used to play haptic feedback.
  */
-public class PlayHaptics implements PlayInterface { // extends Activity The class inherits from the Activity class.
+public class PlayHaptics {
     private MediaPlayer mediaPlayer;
     private AudioManager manager;
     private boolean isPlaying = false;
@@ -89,7 +89,7 @@ public class PlayHaptics implements PlayInterface { // extends Activity The clas
      * MediaPlayer isn't playing.
      */
     public void pausePlaying(){
-        if (isPlaying) {
+        if (isPlaying && mediaPlayer != null) {
             isPlaying = false;
             mediaPlayer.pause();
         }
@@ -106,10 +106,6 @@ public class PlayHaptics implements PlayInterface { // extends Activity The clas
             mediaPlayer.stop();
             mediaPlayer.release();
         }
-    }
-
-    public boolean isPlaying() {
-        return isPlaying;
     }
 
     public float getVolume() {

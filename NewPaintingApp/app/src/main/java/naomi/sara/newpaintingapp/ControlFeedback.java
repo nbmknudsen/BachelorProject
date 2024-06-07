@@ -20,21 +20,21 @@ public class ControlFeedback {
     private int frequency;
 
 
-    public void initializeClip(PlayClip clip, Context context, int chosenBrush, int chosenBackground, String soundType) {
+    public void initializeClip(PlayMusic clip, Context context, int chosenBrush, int chosenBackground) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
             (new Thread(()-> {
-            int fastSound = context.getResources().getIdentifier(soundType + "_" +
-                            brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_f",
-                    "raw", context.getPackageName());
-            int mediumSound = context.getResources().getIdentifier(soundType + "_" +
-                            brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_m",
-                    "raw", context.getPackageName());
-            int slowSound = context.getResources().getIdentifier(soundType + "_" +
-                            brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s",
-                    "raw", context.getPackageName());
+                int fastSound = context.getResources().getIdentifier("haptics_" +
+                                brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_f",
+                        "raw", context.getPackageName());
+                int mediumSound = context.getResources().getIdentifier("haptics_" +
+                                brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_m",
+                        "raw", context.getPackageName());
+                int slowSound = context.getResources().getIdentifier("haptics_" +
+                                brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s",
+                        "raw", context.getPackageName());
 
-            clip.init(context, fastSound, mediumSound, slowSound);
-
+                clip.init(context, fastSound, mediumSound, slowSound);
+                clip.startPlaying(context);
             })).start();
         }
     }
@@ -53,7 +53,7 @@ public class ControlFeedback {
      * @param chosenBrush         The brush chosen in the brush spinner
      * @param chosenBackground    The canvas chosen in the canvas spinner
      */
-    public void initializeFeedback(PlayInterface playFast, PlayInterface playMedium, PlayInterface playSlow,
+    public void initializeFeedback(PlayHaptics playFast, PlayHaptics playMedium, PlayHaptics playSlow,
                            Context context, int chosenBrush, int chosenBackground, String soundType) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
             (new Thread(()-> {
@@ -94,8 +94,8 @@ public class ControlFeedback {
      * @param playSlow     Instance of a class that implements PlayInterface. Plays the fast
      *                     haptics/sounds
      */
-    public void velocityFeedback(double velocity, PlayInterface playFast, PlayInterface playMedium,
-                                 PlayInterface playSlow) {
+    public void velocityFeedback(double velocity, PlayHaptics playFast, PlayHaptics playMedium,
+                                 PlayHaptics playSlow) {
         //(new Thread(() -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 //Log.d("VELOCITY", "Velocity: " + velocity);

@@ -2,11 +2,11 @@ package naomi.sara.newpaintingapp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
-import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.SystemClock;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -17,46 +17,43 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Instrumented test for the PlayHaptics class, which will execute on an Android device.
+ * Instrumented test for the ControlFeedback class, which will execute on an Android device.
  */
 @RunWith(AndroidJUnit4.class)
 public class PlayMusicInstrumentedTest {
-
     PlayMusic playMusic;
-    MediaPlayer mp;
+
     Context context;
 
     @Before
     public void setUp() {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         playMusic = new PlayMusic();
-        /*playMusic.init(context, R.raw.haptics_round_canvas_f);
-        playMusic.startPlaying(context);*/
-        playMusic.init(context, R.raw.haptics_round_canvas_f);
+        playMusic.init(context, R.raw.sound_round_canvas_f, R.raw.sound_round_canvas_m,
+                R.raw.sound_round_canvas_s);
     }
+
 
     @Test
     public void startPlaying() {
         playMusic.startPlaying(context);
-        // Need to wait a bit for MediaPlayer to be prepared
-        SystemClock.sleep(100);
+        // Need to wait a bit for SoundPool to have loaded
+        SystemClock.sleep(500);
         assertTrue(playMusic.isPlaying());
     }
 
     @Test
     public void setVolume() {
-        playMusic.startPlaying(context);
-        // Need to wait a bit for MediaPlayer to be prepared
-        SystemClock.sleep(100);
-        playMusic.setVolume(0.0f,0.0f);
-        assertEquals(0.0f, playMusic.getVolume(), 0.0);
+        playMusic.setVolume(0.06);
+        int volume = playMusic.getVolume("fast");
+        assertEquals(1, volume);
     }
 
     @Test
     public void pausePlaying() {
         playMusic.startPlaying(context);
-        // Need to wait a bit for MediaPlayer to be prepared
-        SystemClock.sleep(100);
+        // Need to wait a bit for SoundPool to have loaded
+        SystemClock.sleep(500);
         playMusic.pausePlaying();
         assertFalse(playMusic.isPlaying());
     }
@@ -64,9 +61,10 @@ public class PlayMusicInstrumentedTest {
     @Test
     public void stopPlaying() {
         playMusic.startPlaying(context);
-        // Need to wait a bit for MediaPlayer to be prepared
-        SystemClock.sleep(100);
+        SoundPool oldSoundPool = playMusic.getSoundPool();
+        // Need to wait a bit for SoundPool to have loaded
+        SystemClock.sleep(500);
         playMusic.stopPlaying();
-        assertFalse(playMusic.isPlaying());
+        assertNotEquals(oldSoundPool, playMusic.getSoundPool());
     }
 }
