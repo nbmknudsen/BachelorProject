@@ -233,8 +233,6 @@ public class DrawingView extends View {
         float touchY = event.getY();
         int index = event.getActionIndex();
         int pointerId = event.getPointerId(index);
-        Log.d("ACTION EVENT IS", String.valueOf(event.getActionMasked()));
-
 
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:

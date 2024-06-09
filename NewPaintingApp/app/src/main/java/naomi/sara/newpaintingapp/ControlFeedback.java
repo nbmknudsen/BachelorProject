@@ -30,13 +30,13 @@ public class ControlFeedback {
     public void initializeMusic(PlayMusic clip, Context context, int chosenBrush, int chosenBackground) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
             (new Thread(()-> {
-                int fastSound = context.getResources().getIdentifier("haptics_" +
+                int fastSound = context.getResources().getIdentifier("sound_" +
                                 brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_f",
                         "raw", context.getPackageName());
-                int mediumSound = context.getResources().getIdentifier("haptics_" +
+                int mediumSound = context.getResources().getIdentifier("sound_" +
                                 brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_m",
                         "raw", context.getPackageName());
-                int slowSound = context.getResources().getIdentifier("haptics_" +
+                int slowSound = context.getResources().getIdentifier("sound_" +
                                 brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s",
                         "raw", context.getPackageName());
 

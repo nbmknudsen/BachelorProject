@@ -10,6 +10,8 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import java.util.Objects;
+
 /**
  * Class used to play auditory feedback. The class implements the PlayInterface interface.
  */
@@ -50,12 +52,6 @@ public class PlayMusic {
                 .build();
 
         try {
-            /*soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-                @Override
-                public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                    startPlaying(context, fastSoundID, mediumSoundID, slowSoundID);
-                }
-            });*/
             fastSoundID = soundPool.load(context, fileNameFast, 1);
             mediumSoundID = soundPool.load(context, fileNameMedium, 1);
             slowSoundID = soundPool.load(context, fileNameSlow, 1);
@@ -73,12 +69,10 @@ public class PlayMusic {
     public void startPlaying(Context context) {
         AudioDeviceInfo aux_line = findAudioDevice(AudioDeviceInfo.TYPE_WIRED_HEADPHONES, context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            /*if (aux_line != null) {
-                manager.setSpeakerphoneOn(false);
-            } else {*/
+            if (aux_line != null) {
+                return;
+            } else {
                 manager.setSpeakerphoneOn(true);
-                manager.setBluetoothScoOn(false);
-                /*manager.startBluetoothSco();*/
 
                 soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                     @Override
@@ -89,7 +83,7 @@ public class PlayMusic {
                         slowStreamID = soundPool.play(slowSoundID, 0.0f, 0.0f, 0, -1,1.0f);
                     }
                 });
-            //}
+            }
         }
     }
 
@@ -160,9 +154,9 @@ public class PlayMusic {
     }
 
     public int getVolume(String SoundSpeedType) {
-        if (SoundSpeedType == "fast") {
+        if (Objects.equals(SoundSpeedType, "fast")) {
             return fastVol;
-        } else if (SoundSpeedType == "medium") {
+        } else if (Objects.equals(SoundSpeedType, "medium")) {
             return mediumVol;
         } else {
             return slowVol;
@@ -180,7 +174,6 @@ public class PlayMusic {
      * @param context Context - there has to be some context or the AudioManager can't get devices
      */
     public AudioDeviceInfo findAudioDevice(int deviceType, Context context) {
-        //Log.d("DEVICE INFO", String.valueOf(deviceType));
         if (context != null) {
             AudioDeviceInfo[] adis = manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
             for (AudioDeviceInfo adi : adis) {
