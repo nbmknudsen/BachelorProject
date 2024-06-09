@@ -77,6 +77,8 @@ public class PlayMusic {
                 manager.setSpeakerphoneOn(false);
             } else {*/
                 manager.setSpeakerphoneOn(true);
+                manager.setBluetoothScoOn(false);
+                /*manager.startBluetoothSco();*/
 
                 soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                     @Override
