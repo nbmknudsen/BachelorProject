@@ -61,16 +61,16 @@ public class ControlFeedback {
      * @param chosenBackground    The canvas chosen in the canvas spinner
      */
     public void initializeFeedback(PlayHaptics playFast, PlayHaptics playMedium, PlayHaptics playSlow,
-                           Context context, int chosenBrush, int chosenBackground, String soundType) {
+                           Context context, int chosenBrush, int chosenBackground) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
             (new Thread(()-> {
-                int fastSound = context.getResources().getIdentifier(soundType + "_" +
+                int fastSound = context.getResources().getIdentifier("haptics_" +
                                 brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_f",
                         "raw", context.getPackageName());
-                int mediumSound = context.getResources().getIdentifier(soundType + "_" +
+                int mediumSound = context.getResources().getIdentifier("haptics_" +
                                 brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_m",
                         "raw", context.getPackageName());
-                int slowSound = context.getResources().getIdentifier(soundType + "_" +
+                int slowSound = context.getResources().getIdentifier("haptics_" +
                                 brushNames[chosenBrush] + "_" + canvasNames[chosenBackground] + "_s",
                         "raw", context.getPackageName());
 

@@ -35,8 +35,6 @@ public class DrawingView extends View {
     private Path drawPath;
     private Paint drawPaint;
 
-    private Canvas drawCanvas;
-
     private List<Path> paths = new ArrayList<Path>();
     private List<Integer> colors = new ArrayList<Integer>();
 
@@ -119,7 +117,6 @@ public class DrawingView extends View {
      * Initializes properties for painting, such as the brush color, brush type and thickness
      */
     private void setupDrawing() {
-        drawCanvas = new Canvas();
         drawPath = new Path();
         drawPaint = new Paint();
         drawPaint.setColor(currentColor);
@@ -248,7 +245,7 @@ public class DrawingView extends View {
                 drawPath.moveTo(touchX, touchY);
 
                 feedbackController.initializeFeedback(playHapticsFast, playHapticsMedium,
-                        playHapticsSlow, this.getContext(), chosenBrush, chosenBackground, "haptics");
+                        playHapticsSlow, this.getContext(), chosenBrush, chosenBackground);
                 feedbackController.initializeMusic(playMusic, this.getContext(), chosenBrush, chosenBackground);
                 invalidate();
                 break;
@@ -297,15 +294,7 @@ public class DrawingView extends View {
                 velocityTracker.recycle();
                 invalidate();
                 break;
-
-            case MotionEvent.ACTION_OUTSIDE:
-                playMusic.pausePlaying();
-                playHapticsFast.pausePlaying();
-                playHapticsMedium.pausePlaying();
-                playHapticsSlow.pausePlaying();
-                invalidate();
         }
-
         invalidate();
         return true;
     }

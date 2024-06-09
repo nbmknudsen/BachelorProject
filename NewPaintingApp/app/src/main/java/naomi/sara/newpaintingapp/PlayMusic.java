@@ -73,22 +73,21 @@ public class PlayMusic {
     public void startPlaying(Context context) {
         AudioDeviceInfo aux_line = findAudioDevice(AudioDeviceInfo.TYPE_WIRED_HEADPHONES, context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (aux_line != null) {
-                return;
-            } else {
+            /*if (aux_line != null) {
+                manager.setSpeakerphoneOn(false);
+            } else {*/
                 manager.setSpeakerphoneOn(true);
 
                 soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                     @Override
                     public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                        Log.d("LOAD", fastSoundID + ", " + mediumSoundID + ", " + slowSoundID);
                         isPlaying = true;
                         fastStreamID = soundPool.play(fastSoundID, 0.0f, 0.0f, 0, -1,1.0f);
                         mediumStreamID = soundPool.play(mediumSoundID, 0.0f, 0.0f, 0, -1,1.0f);
                         slowStreamID = soundPool.play(slowSoundID, 0.0f, 0.0f, 0, -1,1.0f);
                     }
                 });
-            }
+            //}
         }
     }
 
@@ -98,7 +97,7 @@ public class PlayMusic {
      * @param velocity  velocity
      */
     public void setVolume(double velocity) {
-        if (soundPool != null) {
+        if (soundPool != null && isPlaying) {
             if (velocity > 0.045) {
                 soundPool.setVolume(fastStreamID, 1.0f, 1.0f);
                 soundPool.setVolume(mediumStreamID, 0.0f, 0.0f);
